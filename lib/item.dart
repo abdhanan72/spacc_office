@@ -15,6 +15,9 @@ class Item extends StatefulWidget {
 class _ItemState extends State<Item> {
   String? firmId;
   String? searchQuery;
+  final TextEditingController _textEditingController = TextEditingController();
+bool _showList = false;
+  final FocusNode _focusNode = FocusNode(); 
 
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -44,6 +47,13 @@ class _ItemState extends State<Item> {
       Padding(
         padding: EdgeInsets.symmetric(horizontal: mediaquery.size.width * 0.1),
         child: TextField(
+          focusNode: _focusNode,
+          onTap: () {
+            setState(() {
+              _showList=true;
+            });
+          },
+          controller: _textEditingController,
           decoration: InputDecoration(
             border: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -60,7 +70,9 @@ class _ItemState extends State<Item> {
           },
         ),
       ),
-      SizedBox(height: mediaquery.size.height * 0.05),
+      // SizedBox(height: mediaquery.size.height * 0.05),
+      
+    if(_showList)
       FutureBuilder<ItemModel>(
           future: fetchdata(fid: firmId.toString()),
           builder: (BuildContext context, AsyncSnapshot<ItemModel> snapshot) {
@@ -73,21 +85,37 @@ class _ItemState extends State<Item> {
                   .toList();
                   
               return Expanded(
-                child: ListView.builder(
-                  itemCount: filteredData.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final Datum datum = filteredData[index];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                     ListTile(
-                      title: Text(datum.headName),
-                      subtitle: Text(datum.currentBalance),
-                      selectedTileColor: Color(0xff000080),
-                     )
-                      ]
-                    );
-                  },
+                child: SizedBox(width: mediaquery.size.width * 0.8,
+                  child: ListView.builder(
+                    itemCount: filteredData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final Datum datum = filteredData[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                       GestureDetector(
+                        onTap: () {
+                          _textEditingController.text=datum.headName;
+                          setState(() {
+                            _showList=false;
+                            _focusNode.unfocus();
+                          });
+                        },
+                         child: Column(
+                           children: [
+                            const Divider(thickness: 1,color: Colors.black,),
+                             ListTile(
+                              title: Text(datum.headName),
+                              subtitle: Text(datum.currentBalance),
+                              selectedTileColor: const Color(0xff000080),
+                             ),
+                           ],
+                         ),
+                       )
+                        ]
+                      );
+                    },
+                  ),
                 ),
               );
             } else if (snapshot.hasError) {
@@ -105,7 +133,7 @@ class _ItemState extends State<Item> {
                 color: Color(0xff000080),
               ));
             }
-          })
+          }),
     ])));
   }
 }
