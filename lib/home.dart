@@ -10,7 +10,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var mediaquery= MediaQuery.of(context);
     return  Scaffold(
-      
       body: SafeArea(
         child: Padding(
           padding:  EdgeInsets.only(top: mediaquery.size.height*0.2),
