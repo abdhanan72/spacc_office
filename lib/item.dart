@@ -15,6 +15,8 @@ class Item extends StatefulWidget {
 class _ItemState extends State<Item> {
   String? firmId;
   String? searchQuery;
+String? Query;
+
   final TextEditingController fromcontroller = TextEditingController();
   final TextEditingController from2controller = TextEditingController();
   final TextEditingController from3controller = TextEditingController();
@@ -295,7 +297,7 @@ class _ItemState extends State<Item> {
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  searchQuery = value;
+                                  Query = value;
                                 });
                               },
                             ),
@@ -307,21 +309,21 @@ class _ItemState extends State<Item> {
                                 AsyncSnapshot<ItemModel> snapshot) {
                               if (snapshot.hasData) {
                                 final data = snapshot.data?.data;
-                                var filteredData = data!
+                                var filterData = data!
                                     .where((item) => item.headName
                                         .toLowerCase()
                                         .contains(
-                                            searchQuery?.toLowerCase() ?? ''))
+                                            Query?.toLowerCase() ?? ''))
                                     .toList();
 
                                 return Expanded(
                                   child: SizedBox(
                                     width: mediaquery.size.width * 0.8,
                                     child: ListView.builder(
-                                      itemCount: filteredData.length,
+                                      itemCount: filterData.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final Datum datum = filteredData[index];
+                                        final Datum datum = filterData[index];
                                         return Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
