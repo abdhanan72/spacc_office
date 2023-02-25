@@ -399,12 +399,17 @@ String? Query;
                           borderRadius: BorderRadius.circular(20))),
                 ),
               ),
-              SizedBox(height: mediaquery.size.height * 0.02),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: mediaquery.size.width * 0.19),
-                child: ElevatedButton(onPressed: () {}, child: const Text('Save')),
-              )
+              SizedBox(height: mediaquery.size.height * 0.04),
+              SizedBox(
+                width: mediaquery.size.width*0.4,
+                height: mediaquery.size.height*0.05,
+                
+                child:
+               ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)))
+                ),
+                onPressed: () {}, child: const Text('Save')))
             ],
           ),
         )));
