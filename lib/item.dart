@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/models/itemodel.dart';
@@ -58,7 +59,7 @@ String? Query;
     var mediaquery = MediaQuery.of(context);
     return Scaffold(
         appBar: AppBar(
-          elevation: 10,
+          elevation: 20,
           title: const Text('Receipt Entry'),
         ),
         body: SafeArea(
@@ -121,118 +122,111 @@ String? Query;
                     readOnly: true,
                     controller: fromcontroller,
                     onTap: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) {
-                          return Column(children: [
-                            SizedBox(
-                              height: mediaquery.size.height * 0.04,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: mediaquery.size.width * 0.1),
-                              child: TextField(
-                                focusNode: _focusNode,
-                                controller: from2controller,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: const Color(0xff000080),
-                                        width: mediaquery.size.width * 0.01,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  hintText: 'Search...',
-                                ),
-                                onChanged: (value) {
+                    showModalBottomSheet(
+  isScrollControlled: true,
+  context: context,
+  builder: (context) {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Column(children: [
+          SizedBox(
+            height: mediaquery.size.height * 0.04,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: mediaquery.size.width * 0.1),
+            child: TextField(
+              controller: from2controller,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: const Color(0xff000080),
+                      width: mediaquery.size.width * 0.01,
+                    ),
+                    borderRadius: BorderRadius.circular(20)),
+                hintText: 'Search...',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<ItemModel>(
+              future: fetchdata(fid: firmId.toString()),
+              builder: (BuildContext context,
+                  AsyncSnapshot<ItemModel> snapshot) {
+                if (snapshot.hasData) {
+                  final data = snapshot.data?.data;
+                  var filteredData = data!
+                      .where((item) => item.headName
+                          .toLowerCase()
+                          .contains(searchQuery?.toLowerCase() ?? ''))
+                      .toList();
+
+                  return SizedBox(
+                    width: mediaquery.size.width * 0.8,
+                    child: ListView.builder(
+                      itemCount: filteredData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final Datum datum = filteredData[index];
+                        return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  from2controller.text = datum.headName;
+                                  fromcontroller.text = datum.headName;
+                                  fromcode = datum.headCode;
+                                  print(fromcode);
+                                  Navigator.pop(context);
                                   setState(() {
-                                    searchQuery = value;
+                                    _focusNode.unfocus();
+                                    balance = datum.currentBalance;
                                   });
                                 },
-                              ),
-                            ),
-                            FutureBuilder<ItemModel>(
-                              future: fetchdata(fid: firmId.toString()),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<ItemModel> snapshot) {
-                                if (snapshot.hasData) {
-                                  final data = snapshot.data?.data;
-                                  var filteredData = data!
-                                      .where((item) => item.headName
-                                          .toLowerCase()
-                                          .contains(
-                                              searchQuery?.toLowerCase() ?? ''))
-                                      .toList();
+                                child: Column(
+                                  children: [
+                                    const Divider(
+                                      thickness: 1,
+                                      color: Colors.black,
+                                    ),
+                                    ListTile(
+                                      title: Text(datum.headName),
+                                      selectedTileColor: const Color(0xff000080),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ]);
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: SizedBox(
+                      height: mediaquery.size.height * 0.6,
+                      width: mediaquery.size.width * 0.9,
+                      child: Lottie.network(
+                          'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xff000080)),
+                  );
+                }
+              },
+            ),
+          )
+        ]);
+      },
+    );
+  },
+);
 
-                                  return Expanded(
-                                    child: SizedBox(
-                                      width: mediaquery.size.width * 0.8,
-                                      child: ListView.builder(
-                                        itemCount: filteredData.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          final Datum datum =
-                                              filteredData[index];
-                                          return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    from2controller.text =
-                                                        datum.headName;
-                                                    fromcontroller.text =
-                                                        datum.headName;
-                                                    fromcode = datum.headCode;
-                                                    print(fromcode);
-                                                    Navigator.pop(context);
-                                                    setState(() {
-                                                      _focusNode.unfocus();
-                                                      balance =
-                                                          datum.currentBalance;
-                                                    });
-                                                  },
-                                                  child: Column(
-                                                    children: [
-                                                      const Divider(
-                                                        thickness: 1,
-                                                        color: Colors.black,
-                                                      ),
-                                                      ListTile(
-                                                        title: Text(
-                                                            datum.headName),
-                                                        selectedTileColor:
-                                                            const Color(
-                                                                0xff000080),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ]);
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Center(
-                                    child: SizedBox(
-                                      height: mediaquery.size.height * 0.6,
-                                      width: mediaquery.size.width * 0.9,
-                                      child: Lottie.network(
-                                          'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
-                                    ),
-                                  );
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                        color: Color(0xff000080)),
-                                  );
-                                }
-                              },
-                            )
-                          ]);
-                        },
-                      );
                     },
                   ),
                 ),
@@ -267,123 +261,110 @@ String? Query;
                   readOnly: true,
                   controller: tocontroller,
                   onTap: () {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return Column(children: [
-                          SizedBox(
-                            height: mediaquery.size.height * 0.08,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: mediaquery.size.width * 0.1),
-                            child: TextField(
-                              focusNode: _focusNode,
-                              onTap: () {
-                                setState(() {
-                                  // _showList = true;
-                                });
-                              },
-                              controller: tocontroller2,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: const Color(0xff000080),
-                                      width: mediaquery.size.width * 0.01,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20)),
-                                hintText: 'Search...',
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  Query = value;
-                                });
-                              },
-                            ),
-                          ),
-                          // if (_showList)
-                          FutureBuilder<ItemModel>(
-                            future: fetchdata(fid: firmId.toString()),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<ItemModel> snapshot) {
-                              if (snapshot.hasData) {
-                                final data = snapshot.data?.data;
-                                var filterData = data!
-                                    .where((item) => item.headName
-                                        .toLowerCase()
-                                        .contains(
-                                            Query?.toLowerCase() ?? ''))
-                                    .toList();
+                           showModalBottomSheet(
+  isScrollControlled: true,
+  context: context,
+  builder: (context) {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Column(children: [
+          SizedBox(
+            height: mediaquery.size.height * 0.04,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: mediaquery.size.width * 0.1),
+            child: TextField(
+              controller: tocontroller2,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: const Color(0xff000080),
+                      width: mediaquery.size.width * 0.01,
+                    ),
+                    borderRadius: BorderRadius.circular(20)),
+                hintText: 'Search...',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  Query = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<ItemModel>(
+              future: fetchdata(fid: firmId.toString()),
+              builder: (BuildContext context,
+                  AsyncSnapshot<ItemModel> snapshot) {
+                if (snapshot.hasData) {
+                  final data = snapshot.data?.data;
+                  var filteredData = data!
+                      .where((item) => item.headName
+                          .toLowerCase()
+                          .contains(Query?.toLowerCase() ?? ''))
+                      .toList();
 
-                                return Expanded(
-                                  child: SizedBox(
-                                    width: mediaquery.size.width * 0.8,
-                                    child: ListView.builder(
-                                      itemCount: filterData.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final Datum datum = filterData[index];
-                                        return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  tocontroller.text =
-                                                      datum.headName;
-                                                  tocontroller2.text =
-                                                      datum.headName;
-                                                  tocode = datum.headCode;
-                                                  print(tocode);
-
-                                                  Navigator.pop(context);
-                                                  setState(() {
-                                                    _focusNode.unfocus();
-                                                    _showList = false;
-                                                  });
-                                                },
-                                                child: Column(
-                                                  children: [
-                                                    const Divider(
-                                                      thickness: 1,
-                                                      color: Colors.black,
-                                                    ),
-                                                    ListTile(
-                                                      title:
-                                                          Text(datum.headName),
-                                                      selectedTileColor:
-                                                          const Color(
-                                                              0xff000080),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ]);
-                                      },
+                  return SizedBox(
+                    width: mediaquery.size.width * 0.8,
+                    child: ListView.builder(
+                      itemCount: filteredData.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final Datum datum = filteredData[index];
+                        return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  tocontroller.text = datum.headName;
+                                  tocontroller2.text = datum.headName;
+                                  tocode = datum.headCode;
+                                  print(tocode);
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _focusNode.unfocus();
+                                    
+                                  });
+                                },
+                                child: Column(
+                                  children: [
+                                    const Divider(
+                                      thickness: 1,
+                                      color: Colors.black,
                                     ),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                  child: SizedBox(
-                                    height: mediaquery.size.height * 0.6,
-                                    width: mediaquery.size.width * 0.9,
-                                    child: Lottie.network(
-                                        'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
-                                  ),
-                                );
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                      color: Color(0xff000080)),
-                                );
-                              }
-                            },
-                          )
-                        ]);
+                                    ListTile(
+                                      title: Text(datum.headName),
+                                      selectedTileColor: const Color(0xff000080),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ]);
                       },
-                    );
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: SizedBox(
+                      height: mediaquery.size.height * 0.6,
+                      width: mediaquery.size.width * 0.9,
+                      child: Lottie.network(
+                          'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xff000080)),
+                  );
+                }
+              },
+            ),
+          )
+        ]);
+      },
+    );
+  },
+);
                   },
                 ),
               ),
