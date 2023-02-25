@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/login.dart';
 import 'package:spacc_office/receipt.dart';
 
 import 'item.dart';
@@ -33,43 +36,113 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context);
+
+    Future<void> _clearData() async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    }
+
+    void showdialog() {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text('Logout',
+                style: TextStyle(
+                    fontSize: mediaquery.size.height * 0.03,
+                    fontWeight: FontWeight.bold)),
+            content: Column(
+              children: [
+                Lottie.asset('assets/90919-logout.json',
+                    height: mediaquery.size.height * 0.1),
+                const Text(
+                  'Are you sure you want to logout?',
+                )
+              ],
+            ),
+            actions: [
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                  _clearData();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Login()));
+                },
+                child: const Text('Yes'),
+              ),
+              MaterialButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('No'),
+              )
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
         body: SafeArea(
             child: Padding(
-              padding:  EdgeInsets.only(top: mediaquery.size.height*0.07),
-              child: Column(
-                children: [
-                  Text("Hello",style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff000080)),),
-                
-                SizedBox(height: mediaquery.size.height*0.03,),
-                  Text("$fullname",style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff000080)),),
-                  
-                  SizedBox(height:mediaquery.size.height*0.08,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      
-                      GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const Item(),
-                                  )),
-                              child: const Menuitem(
-                                  imagePath: 'assets/receipt.png', text: 'Receipt Entry')),
-                      GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const Receipt(),
-                                  )),
-                              child: const Menuitem(
-                                  imagePath: 'assets/cubes.png', text: 'item Find')),
-                    ],
-                  ),
-                ],
-              ),
-            )));
+      padding: EdgeInsets.only(top: mediaquery.size.height * 0.07),
+      child: Column(
+        children: [
+          Text(
+            "Hello",
+            style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff000080)),
+          ),
+          SizedBox(
+            height: mediaquery.size.height * 0.03,
+          ),
+          Text(
+            "$fullname",
+            style: const TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff000080)),
+          ),
+          SizedBox(
+            height: mediaquery.size.height * 0.08,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Item(),
+                      )),
+                  child: const Menuitem(
+                      imagePath: 'assets/receipt.png', text: 'Receipt Entry')),
+              GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Receipt(),
+                      )),
+                  child: const Menuitem(
+                      imagePath: 'assets/cubes.png', text: 'item Find')),
+            ],
+          ),
+          SizedBox(height: mediaquery.size.height*0.05,),
+          Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    showdialog();
+                  },
+                  child:
+                      const Menuitem(imagePath: 'assets/logout.png', text: 'Logout'))
+            ],
+          )
+        ],
+      ),
+    )));
   }
 }
 
