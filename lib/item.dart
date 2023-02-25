@@ -130,7 +130,7 @@ String? Query;
       builder: (BuildContext context, StateSetter setState) {
         return Column(children: [
           SizedBox(
-            height: mediaquery.size.height * 0.04,
+            height: mediaquery.size.height * 0.06,
           ),
           Padding(
             padding: EdgeInsets.symmetric(
