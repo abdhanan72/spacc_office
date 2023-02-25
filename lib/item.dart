@@ -136,6 +136,7 @@ String? Query;
             padding: EdgeInsets.symmetric(
                 horizontal: mediaquery.size.width * 0.1),
             child: TextField(
+              autofocus: true,
               controller: from2controller,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -209,13 +210,18 @@ String? Query;
                     child: SizedBox(
                       height: mediaquery.size.height * 0.6,
                       width: mediaquery.size.width * 0.9,
-                      child: Lottie.network(
-                          'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
+                      child: Lottie.asset(
+                          'assets/error.json'),
                     ),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(color: Color(0xff000080)),
+                  return  Center(
+                    child: SizedBox(
+                      height: mediaquery.size.height * 0.6,
+                      width: mediaquery.size.width * 0.9,
+                      child: Lottie.asset(
+                          'assets/99297-loading-files.json'),
+                    ),
                   );
                 }
               },
@@ -269,12 +275,13 @@ String? Query;
       builder: (BuildContext context, StateSetter setState) {
         return Column(children: [
           SizedBox(
-            height: mediaquery.size.height * 0.04,
+            height: mediaquery.size.height * 0.05,
           ),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: mediaquery.size.width * 0.1),
             child: TextField(
+              autofocus: true,
               controller: tocontroller2,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -343,18 +350,23 @@ String? Query;
                       },
                     ),
                   );
-                } else if (snapshot.hasError) {
+                }else if (snapshot.hasError) {
                   return Center(
                     child: SizedBox(
                       height: mediaquery.size.height * 0.6,
                       width: mediaquery.size.width * 0.9,
-                      child: Lottie.network(
-                          'https://assets9.lottiefiles.com/packages/lf20_1PD1tpvlop.json'),
+                      child: Lottie.asset(
+                          'assets/error.json'),
                     ),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(color: Color(0xff000080)),
+                  return  Center(
+                    child: SizedBox(
+                      height: mediaquery.size.height * 0.9,
+                      width: mediaquery.size.width * 0.9,
+                      child: Lottie.asset(
+                          'assets/99297-loading-files.json'),
+                    ),
                   );
                 }
               },
