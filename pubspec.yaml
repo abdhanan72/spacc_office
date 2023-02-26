@@ -41,6 +41,7 @@ dependencies:
   open_settings: ^2.0.2
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
+  motion_toast: ^2.6.5
 
 dev_dependencies:
   flutter_test:
