@@ -1,9 +1,11 @@
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
+import 'package:spacc_office/paymentapi.dart';
 import 'itemapi.dart';
 
 class Item extends StatefulWidget {
@@ -16,7 +18,7 @@ class Item extends StatefulWidget {
 class _ItemState extends State<Item> {
   String? firmId;
   String? searchQuery;
-String? Query;
+  String? Query;
 
   final TextEditingController fromcontroller = TextEditingController();
   final TextEditingController from2controller = TextEditingController();
@@ -54,13 +56,39 @@ String? Query;
     });
   }
 
+  void _postPayment() async {
+    const url = 'http://cloud.spaccsoftware.com/hanan_api/save_payment.php';
+
+    final data = {
+      'fid': firmId,
+      'accode': fromcode,
+      'paymethod': tocode,
+      'paydate': date.text,
+      'memo': memo.text,
+      'amount': amount.text
+    };
+
+    final response = await http.post(Uri.parse(url), body: data);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print(result);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment successfully posted')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context);
     return Scaffold(
         appBar: AppBar(
           elevation: 20,
-          title: const Text('Receipt Entry'),
+          title: const Text('Payment Entry'),
         ),
         body: SafeArea(
             child: SingleChildScrollView(
@@ -104,7 +132,7 @@ String? Query;
               Padding(
                 padding: EdgeInsets.only(right: mediaquery.size.width * 0.4),
                 child: const Text(
-                  'Received From',
+                  'Paid to',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -122,117 +150,132 @@ String? Query;
                     readOnly: true,
                     controller: fromcontroller,
                     onTap: () {
-                    showModalBottomSheet(
-  isScrollControlled: true,
-  context: context,
-  builder: (context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return Column(children: [
-          SizedBox(
-            height: mediaquery.size.height * 0.06,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: mediaquery.size.width * 0.1),
-            child: TextField(
-              autofocus: true,
-              controller: from2controller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: const Color(0xff000080),
-                      width: mediaquery.size.width * 0.01,
-                    ),
-                    borderRadius: BorderRadius.circular(20)),
-                hintText: 'Search...',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<ItemModel>(
-              future: fetchdata(fid: firmId.toString()),
-              builder: (BuildContext context,
-                  AsyncSnapshot<ItemModel> snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data?.data;
-                  var filteredData = data!
-                      .where((item) => item.headName
-                          .toLowerCase()
-                          .contains(searchQuery?.toLowerCase() ?? ''))
-                      .toList();
-
-                  return SizedBox(
-                    width: mediaquery.size.width * 0.8,
-                    child: ListView.builder(
-                      itemCount: filteredData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Datum datum = filteredData[index];
-                        return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  from2controller.text = datum.headName;
-                                  fromcontroller.text = datum.headName;
-                                  fromcode = datum.headCode;
-                                  print(fromcode);
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    _focusNode.unfocus();
-                                    balance = datum.currentBalance;
-                                  });
-                                },
-                                child: Column(
-                                  children: [
-                                    const Divider(
-                                      thickness: 1,
-                                      color: Colors.black,
-                                    ),
-                                    ListTile(
-                                      title: Text(datum.headName),
-                                      selectedTileColor: const Color(0xff000080),
-                                    ),
-                                  ],
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return StatefulBuilder(
+                            builder:
+                                (BuildContext context, StateSetter setState) {
+                              return Column(children: [
+                                SizedBox(
+                                  height: mediaquery.size.height * 0.06,
                                 ),
-                              )
-                            ]);
-                      },
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: SizedBox(
-                      height: mediaquery.size.height * 0.6,
-                      width: mediaquery.size.width * 0.9,
-                      child: Lottie.asset(
-                          'assets/error.json'),
-                    ),
-                  );
-                } else {
-                  return  Center(
-                    child: SizedBox(
-                      height: mediaquery.size.height * 0.6,
-                      width: mediaquery.size.width * 0.9,
-                      child: Lottie.asset(
-                          'assets/99297-loading-files.json'),
-                    ),
-                  );
-                }
-              },
-            ),
-          )
-        ]);
-      },
-    );
-  },
-);
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: mediaquery.size.width * 0.1),
+                                  child: TextField(
+                                    autofocus: true,
+                                    controller: from2controller,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: const Color(0xff000080),
+                                            width: mediaquery.size.width * 0.01,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      hintText: 'Search...',
+                                    ),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        searchQuery = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  child: FutureBuilder<ItemModel>(
+                                    future: fetchdata(fid: firmId.toString()),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<ItemModel> snapshot) {
+                                      if (snapshot.hasData) {
+                                        final data = snapshot.data?.data;
+                                        var filteredData = data!
+                                            .where((item) => item.headName
+                                                .toLowerCase()
+                                                .contains(searchQuery
+                                                        ?.toLowerCase() ??
+                                                    ''))
+                                            .toList();
 
+                                        return SizedBox(
+                                          width: mediaquery.size.width * 0.8,
+                                          child: ListView.builder(
+                                            itemCount: filteredData.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              final Datum datum =
+                                                  filteredData[index];
+                                              return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        from2controller.text =
+                                                            datum.headName;
+                                                        fromcontroller.text =
+                                                            datum.headName;
+                                                        fromcode =
+                                                            datum.headCode;
+                                                        print(fromcode);
+                                                        Navigator.pop(context);
+                                                        setState(() {
+                                                          _focusNode.unfocus();
+                                                          balance = datum
+                                                              .currentBalance;
+                                                        });
+                                                      },
+                                                      child: Column(
+                                                        children: [
+                                                          const Divider(
+                                                            thickness: 1,
+                                                            color: Colors.black,
+                                                          ),
+                                                          ListTile(
+                                                            title: Text(
+                                                                datum.headName),
+                                                            selectedTileColor:
+                                                                const Color(
+                                                                    0xff000080),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ]);
+                                            },
+                                          ),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                          child: SizedBox(
+                                            height:
+                                                mediaquery.size.height * 0.6,
+                                            width: mediaquery.size.width * 0.9,
+                                            child: Lottie.asset(
+                                                'assets/error.json'),
+                                          ),
+                                        );
+                                      } else {
+                                        return Center(
+                                          child: SizedBox(
+                                            height:
+                                                mediaquery.size.height * 0.6,
+                                            width: mediaquery.size.width * 0.9,
+                                            child: Lottie.asset(
+                                                'assets/99297-loading-files.json'),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                )
+                              ]);
+                            },
+                          );
+                        },
+                      );
                     },
                   ),
                 ),
@@ -250,7 +293,7 @@ String? Query;
               Padding(
                 padding: EdgeInsets.only(right: mediaquery.size.width * 0.5),
                 child: const Text(
-                  'Paying to',
+                  'Payment Method',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -267,116 +310,126 @@ String? Query;
                   readOnly: true,
                   controller: tocontroller,
                   onTap: () {
-                           showModalBottomSheet(
-  isScrollControlled: true,
-  context: context,
-  builder: (context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return Column(children: [
-          SizedBox(
-            height: mediaquery.size.height * 0.05,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: mediaquery.size.width * 0.1),
-            child: TextField(
-              autofocus: true,
-              controller: tocontroller2,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: const Color(0xff000080),
-                      width: mediaquery.size.width * 0.01,
-                    ),
-                    borderRadius: BorderRadius.circular(20)),
-                hintText: 'Search...',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  Query = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<ItemModel>(
-              future: fetchdata(fid: firmId.toString()),
-              builder: (BuildContext context,
-                  AsyncSnapshot<ItemModel> snapshot) {
-                if (snapshot.hasData) {
-                  final data = snapshot.data?.data;
-                  var filteredData = data!
-                      .where((item) => item.headName
-                          .toLowerCase()
-                          .contains(Query?.toLowerCase() ?? ''))
-                      .toList();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(
+                          builder:
+                              (BuildContext context, StateSetter setState) {
+                            return Column(children: [
+                              SizedBox(
+                                height: mediaquery.size.height * 0.05,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: mediaquery.size.width * 0.1),
+                                child: TextField(
+                                  autofocus: true,
+                                  controller: tocontroller2,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: const Color(0xff000080),
+                                          width: mediaquery.size.width * 0.01,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    hintText: 'Search...',
+                                  ),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      Query = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: FutureBuilder<ItemModel>(
+                                  future: fetchdata(fid: firmId.toString()),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<ItemModel> snapshot) {
+                                    if (snapshot.hasData) {
+                                      final data = snapshot.data?.data;
+                                      var filteredData = data!
+                                          .where((item) => item.headName
+                                              .toLowerCase()
+                                              .contains(
+                                                  Query?.toLowerCase() ?? ''))
+                                          .toList();
 
-                  return SizedBox(
-                    width: mediaquery.size.width * 0.8,
-                    child: ListView.builder(
-                      itemCount: filteredData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Datum datum = filteredData[index];
-                        return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  tocontroller.text = datum.headName;
-                                  tocontroller2.text = datum.headName;
-                                  tocode = datum.headCode;
-                                  print(tocode);
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    _focusNode.unfocus();
-                                    
-                                  });
-                                },
-                                child: Column(
-                                  children: [
-                                    const Divider(
-                                      thickness: 1,
-                                      color: Colors.black,
-                                    ),
-                                    ListTile(
-                                      title: Text(datum.headName),
-                                      selectedTileColor: const Color(0xff000080),
-                                    ),
-                                  ],
+                                      return SizedBox(
+                                        width: mediaquery.size.width * 0.8,
+                                        child: ListView.builder(
+                                          itemCount: filteredData.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            final Datum datum =
+                                                filteredData[index];
+                                            return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      tocontroller.text =
+                                                          datum.headName;
+                                                      tocontroller2.text =
+                                                          datum.headName;
+                                                      tocode = datum.headCode;
+                                                      print(tocode);
+                                                      Navigator.pop(context);
+                                                      setState(() {
+                                                        _focusNode.unfocus();
+                                                      });
+                                                    },
+                                                    child: Column(
+                                                      children: [
+                                                        const Divider(
+                                                          thickness: 1,
+                                                          color: Colors.black,
+                                                        ),
+                                                        ListTile(
+                                                          title: Text(
+                                                              datum.headName),
+                                                          selectedTileColor:
+                                                              const Color(
+                                                                  0xff000080),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ]);
+                                          },
+                                        ),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Center(
+                                        child: SizedBox(
+                                          height: mediaquery.size.height * 0.6,
+                                          width: mediaquery.size.width * 0.9,
+                                          child:
+                                              Lottie.asset('assets/error.json'),
+                                        ),
+                                      );
+                                    } else {
+                                      return Center(
+                                        child: SizedBox(
+                                          height: mediaquery.size.height * 0.9,
+                                          width: mediaquery.size.width * 0.9,
+                                          child: Lottie.asset(
+                                              'assets/99297-loading-files.json'),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
                               )
                             ]);
+                          },
+                        );
                       },
-                    ),
-                  );
-                }else if (snapshot.hasError) {
-                  return Center(
-                    child: SizedBox(
-                      height: mediaquery.size.height * 0.6,
-                      width: mediaquery.size.width * 0.9,
-                      child: Lottie.asset(
-                          'assets/error.json'),
-                    ),
-                  );
-                } else {
-                  return  Center(
-                    child: SizedBox(
-                      height: mediaquery.size.height * 0.9,
-                      width: mediaquery.size.width * 0.9,
-                      child: Lottie.asset(
-                          'assets/99297-loading-files.json'),
-                    ),
-                  );
-                }
-              },
-            ),
-          )
-        ]);
-      },
-    );
-  },
-);
+                    );
                   },
                 ),
               ),
@@ -413,15 +466,24 @@ String? Query;
               ),
               SizedBox(height: mediaquery.size.height * 0.04),
               SizedBox(
-                width: mediaquery.size.width*0.4,
-                height: mediaquery.size.height*0.05,
-                
-                child:
-               ElevatedButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)))
-                ),
-                onPressed: () {}, child: const Text('Save')))
+                  width: mediaquery.size.width * 0.4,
+                  height: mediaquery.size.height * 0.05,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)))),
+                      onPressed: () {
+                        print(firmId);
+                        print(date.text);
+                        print(fromcode);
+                        print(tocode);
+                        print(amount.text);
+                        print(memo.text);
+
+                        _postPayment();
+                      },
+                      child: const Text('Save')))
             ],
           ),
         )));

@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                         builder: (context) => const Item(),
                       )),
                   child: const Menuitem(
-                      imagePath: 'assets/receipt.png', text: 'Receipt Entry')),
+                      imagePath: 'assets/receipt.png', text: 'Payment Entry')),
               GestureDetector(
                   onTap: () => Navigator.push(
                       context,
@@ -129,15 +129,18 @@ class _HomePageState extends State<HomePage> {
                       imagePath: 'assets/cubes.png', text: 'item Find')),
             ],
           ),
-          SizedBox(height: mediaquery.size.height*0.05,),
-          Row(mainAxisAlignment: MainAxisAlignment.center,
+          SizedBox(
+            height: mediaquery.size.height * 0.05,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
                   onTap: () {
                     showdialog();
                   },
-                  child:
-                      const Menuitem(imagePath: 'assets/logout.png', text: 'Logout'))
+                  child: const Menuitem(
+                      imagePath: 'assets/logout.png', text: 'Logout'))
             ],
           )
         ],
