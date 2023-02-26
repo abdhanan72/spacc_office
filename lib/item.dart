@@ -8,7 +8,7 @@ import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'itemapi.dart';
-import 'package:motion_toast/motion_toast.dart';
+import 'package:number_to_words/number_to_words.dart';
 
 class Item extends StatefulWidget {
   const Item({super.key});
@@ -37,6 +37,7 @@ class _ItemState extends State<Item> {
   late String tocode;
   late String fromcode;
   late String formattedDate;
+  
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? firmId = await prefs.getString('firm_id');
@@ -107,6 +108,8 @@ class _ItemState extends State<Item> {
               onPressed: () {
                 _postPayment();
                 fromcontroller.clear();
+                from2controller.clear();
+                tocontroller2.clear();
                 amount.clear();
                 memo.clear();
                 setState(() {
@@ -195,13 +198,6 @@ class _ItemState extends State<Item> {
                 SizedBox(
                   height: mediaquery.size.height * 0.03,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(right: mediaquery.size.width * 0.6),
-                  child: const Text(
-                    'Paid to',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
                 SizedBox(
                   height: mediaquery.size.height * 0.01,
                 ),
@@ -211,13 +207,14 @@ class _ItemState extends State<Item> {
                         horizontal: mediaquery.size.width * 0.1),
                     child: TextFormField(
                       decoration: InputDecoration(
+                          labelText: 'Paid to',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20))),
                       readOnly: true,
                       controller: fromcontroller,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Field 1 cannot be empty';
+                          return 'Field  cannot be empty';
                         }
                         return null;
                       },
@@ -365,18 +362,11 @@ class _ItemState extends State<Item> {
                   height: mediaquery.size.height * 0.01,
                 ),
                 Text(
-                  "Current Balance:${balance}Rs",
+                  "Current Balance:Rs$balance.00",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: mediaquery.size.height * 0.04,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: mediaquery.size.width * 0.4),
-                  child: const Text(
-                    'Payment Method',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
                 ),
                 SizedBox(
                   height: mediaquery.size.height * 0.01,
@@ -387,11 +377,12 @@ class _ItemState extends State<Item> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Field 1 cannot be empty';
+                        return 'Field  cannot be empty';
                       }
                       return null;
                     },
                     decoration: InputDecoration(
+                        labelText: 'Payment Method',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                     readOnly: true,
@@ -531,14 +522,15 @@ class _ItemState extends State<Item> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Field 1 cannot be empty';
+                        return 'Field  cannot be empty';
                       }
                       return null;
                     },
                     controller: amount,
+                    
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        hintText: 'Amount',
+                        labelText: 'Amount',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   ),
@@ -552,7 +544,7 @@ class _ItemState extends State<Item> {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Field 1 cannot be empty';
+                        return 'Field  cannot be empty';
                       }
                       return null;
                     },
@@ -560,7 +552,7 @@ class _ItemState extends State<Item> {
                     textInputAction: TextInputAction.done,
                     maxLines: 3,
                     decoration: InputDecoration(
-                        hintText: 'Memo',
+                        labelText: 'Memo',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                   ),
@@ -576,6 +568,7 @@ class _ItemState extends State<Item> {
                                     borderRadius: BorderRadius.circular(20)))),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
+                              
                             showdialog();
                           }
                         },

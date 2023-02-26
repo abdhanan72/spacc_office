@@ -42,7 +42,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
   motion_toast: ^2.6.5
-
+  number_to_words: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
