@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/home.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
@@ -129,8 +130,19 @@ class _ItemState extends State<Item> {
     var mediaquery = MediaQuery.of(context);
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 20,
           title: const Text('Payment Entry'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ));
+            },
+          ),
         ),
         body: SafeArea(
             child: SingleChildScrollView(
@@ -172,7 +184,7 @@ class _ItemState extends State<Item> {
                 height: mediaquery.size.height * 0.03,
               ),
               Padding(
-                padding: EdgeInsets.only(right: mediaquery.size.width * 0.4),
+                padding: EdgeInsets.only(right: mediaquery.size.width * 0.6),
                 child: const Text(
                   'Paid to',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -333,7 +345,7 @@ class _ItemState extends State<Item> {
                 height: mediaquery.size.height * 0.04,
               ),
               Padding(
-                padding: EdgeInsets.only(right: mediaquery.size.width * 0.5),
+                padding: EdgeInsets.only(right: mediaquery.size.width * 0.4),
                 child: const Text(
                   'Payment Method',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
