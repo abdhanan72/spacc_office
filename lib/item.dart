@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,6 +80,48 @@ class _ItemState extends State<Item> {
           content: Text(
               'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
     }
+  }
+
+  void showdialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Logout',
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  fontWeight: FontWeight.bold)),
+          content: Column(
+            children: [
+              Lottie.asset('assets/105198-attention.json',
+                  height: MediaQuery.of(context).size.height * 0.1),
+              const Text(
+                'Are you sure you want to Save the payment?',
+              )
+            ],
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Item(),
+                    ));
+                _postPayment();
+              },
+              child: const Text('Yes'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -480,7 +523,7 @@ class _ItemState extends State<Item> {
                         print(amount.text);
                         print(memo.text);
 
-                        _postPayment();
+                        showdialog();
                       },
                       child: const Text('Save')))
             ],
