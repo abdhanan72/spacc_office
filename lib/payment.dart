@@ -3,46 +3,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/home.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'itemapi.dart';
 
 
-class Item extends StatefulWidget {
-  const Item({super.key});
+class Payment extends StatefulWidget {
+  const Payment({super.key});
 
   @override
-  State<Item> createState() => _ItemState();
+  State<Payment> createState() => _PaymentState();
 }
 
-class _ItemState extends State<Item> {
-  String? firmId;
-  String? searchQuery;
+class _PaymentState extends State<Payment> {
   String? Query;
-
-  final TextEditingController fromcontroller = TextEditingController();
+  final TextEditingController amount = TextEditingController();
+  late String balance;
+  final TextEditingController date = TextEditingController();
+  String? firmId;
+  late String formattedDate;
   final TextEditingController from2controller = TextEditingController();
   final TextEditingController from3controller = TextEditingController();
+  late String fromcode;
+  final TextEditingController fromcontroller = TextEditingController();
+  final TextEditingController memo = TextEditingController();
+  String? searchQuery;
+  late String tocode;
   final TextEditingController tocontroller = TextEditingController();
   final TextEditingController tocontroller2 = TextEditingController();
-  final TextEditingController date = TextEditingController();
-  final TextEditingController memo = TextEditingController();
-  final TextEditingController amount = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _showList = false;
+
   final FocusNode _focusNode = FocusNode();
-  late String balance;
-  late String tocode;
-  late String fromcode;
-  late String formattedDate;
-  
-  Future<String?> getFirmId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? firmId = await prefs.getString('firm_id');
-    return firmId;
-  }
+  final _formKey = GlobalKey<FormState>();
+
 
   @override
   void initState() {
@@ -59,30 +52,10 @@ class _ItemState extends State<Item> {
     });
   }
 
-  void _postPayment() async {
-    const url = 'http://cloud.spaccsoftware.com/hanan_api/save_payment.php';
-
-    final data = {
-      'fid': firmId,
-      'accode': fromcode,
-      'paymethod': tocode,
-      'paydate': date.text,
-      'memo': memo.text,
-      'amount': amount.text
-    };
-
-    final response = await http.post(Uri.parse(url), body: data);
-
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      print(result);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Payment successfully posted')));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
-    }
+  Future<String?> getFirmId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? firmId = await prefs.getString('firm_id');
+    return firmId;
   }
 
   void showdialog() {
@@ -132,24 +105,40 @@ class _ItemState extends State<Item> {
     );
   }
 
+  void _postPayment() async {
+    const url = 'http://cloud.spaccsoftware.com/hanan_api/save_payment.php';
+
+    final data = {
+      'fid': firmId,
+      'accode': fromcode,
+      'paymethod': tocode,
+      'paydate': date.text,
+      'memo': memo.text,
+      'amount': amount.text
+    };
+
+    final response = await http.post(Uri.parse(url), body: data);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      print(result);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Payment successfully posted')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context);
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           elevation: 20,
           title: const Text('Payment Entry'),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ));
-            },
-          ),
         ),
         body: Form(
           key: _formKey,
@@ -292,7 +281,7 @@ class _ItemState extends State<Item> {
                                                               datum.headName;
                                                           fromcode =
                                                               datum.headCode;
-                                                          print(fromcode);
+                                                          
                                                           Navigator.pop(
                                                               context);
                                                           setState(() {
@@ -363,7 +352,7 @@ class _ItemState extends State<Item> {
                 ),
                 Text(
                   "Current Balance:Rs$balance.00",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: mediaquery.size.height * 0.04,
@@ -455,7 +444,7 @@ class _ItemState extends State<Item> {
                                                         tocontroller2.text =
                                                             datum.headName;
                                                         tocode = datum.headCode;
-                                                        print(tocode);
+                                                        
                                                         Navigator.pop(context);
                                                         setState(() {
                                                           _focusNode.unfocus();

@@ -16,39 +16,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _formKey = GlobalKey<FormState>();
   bool hasinternet = false;
-
-  bool _obscuretext = true;
-
-    void _toggle() {
-    setState(() {
-      _obscuretext = !_obscuretext;
-    });
-  }
-
+  late SharedPreferences prefs;
   late String unm, pwd;
 
-  late SharedPreferences prefs;
-
-
-void _saveForm(http.Response response) async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      prefs = await SharedPreferences.getInstance();
-      await prefs.setString('username', unm);
-      await prefs.setString('password', pwd);
-      var jsonData = jsonDecode(response.body);
-      if (jsonData["response_code"] == 27) {
-        var fid = jsonData["data"]["firm_id"];
-        await prefs.setString('firm_id', fid);
-        var fullname = jsonData["data"]["fullname"];
-        await prefs.setString('fullname', fullname);
-      }
-      await prefs.setBool('isLoggedIn', true);
-    }
-  }
-
+  final _formKey = GlobalKey<FormState>();
+  bool _obscuretext = true;
 
     @override
   void initState() {
@@ -58,6 +31,7 @@ void _saveForm(http.Response response) async {
 
   Future<void> checkLogin() async {
     if (await isLoggedIn()) {
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -89,7 +63,62 @@ void _saveForm(http.Response response) async {
     }
   }
 
+    void _toggle() {
+    setState(() {
+      _obscuretext = !_obscuretext;
+    });
+  }
 
+void _saveForm(http.Response response) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', unm);
+      await prefs.setString('password', pwd);
+      var jsonData = jsonDecode(response.body);
+      if (jsonData["response_code"] == 27) {
+        var fid = jsonData["data"]["firm_id"];
+        await prefs.setString('firm_id', fid);
+        var fullname = jsonData["data"]["fullname"];
+        await prefs.setString('fullname', fullname);
+      }
+      await prefs.setBool('isLoggedIn', true);
+    }
+  }
+
+    void _showdialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Lottie.asset('assets/45721-no-internet.json',
+              width: MediaQuery.of(context).size.width*0.1, height: MediaQuery.of(context).size.height*0.1),
+          content:
+              const Text('Please check your internet connection and try again'),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                OpenSettings.openNetworkOperatorSetting();
+              },
+              child: const Text('Turn on mobile data'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                OpenSettings.openWIFISetting();
+              },
+              child: const Text('Turn on wifi'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -212,40 +241,6 @@ void _saveForm(http.Response response) async {
           ),
         ),
       ),
-    );
-  }
-
-    void _showdialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Lottie.asset('assets/45721-no-internet.json',
-              width: MediaQuery.of(context).size.width*0.1, height: MediaQuery.of(context).size.height*0.1),
-          content:
-              const Text('Please check your internet connection and try again'),
-          actions: [
-            MaterialButton(
-              onPressed: () {
-                OpenSettings.openNetworkOperatorSetting();
-              },
-              child: const Text('Turn on mobile data'),
-            ),
-            MaterialButton(
-              onPressed: () {
-                OpenSettings.openWIFISetting();
-              },
-              child: const Text('Turn on wifi'),
-            ),
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

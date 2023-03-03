@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/login.dart';
-import 'package:spacc_office/receipt.dart';
+import 'package:spacc_office/order.dart';
 
-import 'item.dart';
+import 'payment.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 Future<String?> getfname() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? fullname = await prefs.getString('fullname');
+  String? fullname = prefs.getString('fullname');
   return fullname;
 }
 
@@ -88,9 +88,9 @@ class _HomePageState extends State<HomePage> {
       padding: EdgeInsets.only(top: mediaquery.size.height * 0.07),
       child: Column(
         children: [
-          Text(
-            "Hello",
-            style: const TextStyle(
+          const Text(
+            "HELLO",
+            style: TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
                 color: Color(0xff000080)),
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
             height: mediaquery.size.height * 0.03,
           ),
           Text(
-            "$fullname",
+            fullname,
             style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Item(),
+                        builder: (context) => const Payment(),
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/receipt.png', text: 'Payment Entry')),
@@ -123,10 +123,10 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Receipt(),
+                        builder: (context) => const Order(),
                       )),
                   child: const Menuitem(
-                      imagePath: 'assets/cubes.png', text: 'item Find')),
+                      imagePath: 'assets/checklist.png', text: 'Order Entry')),
             ],
           ),
           SizedBox(
@@ -150,14 +150,14 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Menuitem extends StatelessWidget {
-  final String imagePath;
-  final String text;
-
   const Menuitem({
     super.key,
     required this.imagePath,
     required this.text,
   });
+
+  final String imagePath;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
