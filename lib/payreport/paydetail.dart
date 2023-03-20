@@ -44,26 +44,41 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: viewpayment(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return Expanded(
-              child: ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  var item = snapshot.data[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [Text(item['acname'])],
-                  );
-                },
-              ),
-            );
-          } else if (snapshot.hasError) {
-            ScaffoldMessenger(child: Text(snapshot.error.toString()));
-          }
-          return const CircularProgressIndicator();
-        },
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: viewpayment(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                TextEditingController datecontroller = TextEditingController();
+
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      var item = snapshot.data[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            controller: datecontroller,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20))),
+                          ),
+                          Text(item['paydate'])
+                        ],
+                      );
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                ScaffoldMessenger(child: Text(snapshot.error.toString()));
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
+        ],
       ),
     );
   }
