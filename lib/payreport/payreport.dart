@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:spacc_office/payreport/paydetail.dart';
 
 class PaymentReport extends StatefulWidget {
   const PaymentReport({super.key});
@@ -22,13 +22,6 @@ class _PaymentReportState extends State<PaymentReport> {
       'date2': todate.text,
       'fid': fid,
     });
-    var data = jsonDecode(response.body);
-    return data['data'];
-  }
-
-  void delete() async {
-    var response = await http.post(Uri.parse(url),
-        body: {'action': 'DELETE', 'fid': fid, 'paynumber': select});
     var data = jsonDecode(response.body);
     return data['data'];
   }
@@ -144,7 +137,13 @@ class _PaymentReportState extends State<PaymentReport> {
                       itemBuilder: (BuildContext context, int index) {
                         var item = snapshot.data[index];
                         return InkWell(
-                         
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentDetails(paynum:item['paynumber'] ,),
+                                ));
+                          },
                           child: Padding(
                               padding: EdgeInsets.only(
                                 left: mediaquery.width * 0.02,
@@ -163,7 +162,7 @@ class _PaymentReportState extends State<PaymentReport> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text('#${item['paynumber']}'),
-                                        Text('Dt:${item['paydate']}'),
+                                        Text('Date:${item['paydate']}'),
                                       ],
                                     ),
                                     SizedBox(height: mediaquery.height * 0.02),
