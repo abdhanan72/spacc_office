@@ -3,11 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/Payment/getheads.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
-import 'itemapi.dart';
-
 
 class Payment extends StatefulWidget {
   const Payment({super.key});
@@ -32,14 +31,14 @@ class _PaymentState extends State<Payment> {
   late String tocode;
   final TextEditingController tocontroller = TextEditingController();
   final TextEditingController tocontroller2 = TextEditingController();
-
+  String? action;
   final FocusNode _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
-
 
   @override
   void initState() {
     super.initState();
+    action = 'CREATE';
     balance = '---';
     tocode = '';
     fromcode = '';
@@ -106,9 +105,10 @@ class _PaymentState extends State<Payment> {
   }
 
   void _postPayment() async {
-    const url = 'http://cloud.spaccsoftware.com/hanan_api/save_payment.php';
+    const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
 
     final data = {
+      'action': action,
       'fid': firmId,
       'accode': fromcode,
       'paymethod': tocode,
@@ -281,7 +281,7 @@ class _PaymentState extends State<Payment> {
                                                               datum.headName;
                                                           fromcode =
                                                               datum.headCode;
-                                                          
+
                                                           Navigator.pop(
                                                               context);
                                                           setState(() {
@@ -444,7 +444,7 @@ class _PaymentState extends State<Payment> {
                                                         tocontroller2.text =
                                                             datum.headName;
                                                         tocode = datum.headCode;
-                                                        
+
                                                         Navigator.pop(context);
                                                         setState(() {
                                                           _focusNode.unfocus();
@@ -516,7 +516,6 @@ class _PaymentState extends State<Payment> {
                       return null;
                     },
                     controller: amount,
-                    
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         labelText: 'Amount',
@@ -557,7 +556,6 @@ class _PaymentState extends State<Payment> {
                                     borderRadius: BorderRadius.circular(20)))),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                              
                             showdialog();
                           }
                         },

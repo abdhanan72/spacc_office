@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/login.dart';
-import 'package:spacc_office/order.dart';
+import 'package:spacc_office/Order/order.dart';
+import 'package:spacc_office/payreport/payreport.dart';
+import '../Login/login.dart';
+import '../Payment/payment.dart';
 
-import 'payment.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +21,12 @@ Future<String?> getfname() async {
   return fullname;
 }
 
-late String fullname;
+  String? fullname;
 
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+
     getfname().then((value) {
       setState(() {
         fullname = value!;
@@ -99,7 +101,7 @@ class _HomePageState extends State<HomePage> {
             height: mediaquery.size.height * 0.03,
           ),
           Text(
-            fullname,
+            fullname!,
             style: const TextStyle(
                 fontSize: 25,
                 fontWeight: FontWeight.bold,
@@ -127,6 +129,15 @@ class _HomePageState extends State<HomePage> {
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
+
+                      GestureDetector(
+                        
+                        onTap:() => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentReport(),
+                      )),
+                        child: const Menuitem(imagePath: 'assets/report.png', text: 'Payment Report'))
             ],
           ),
           SizedBox(

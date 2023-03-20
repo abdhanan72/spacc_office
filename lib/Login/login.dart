@@ -6,7 +6,7 @@ import 'package:open_settings/open_settings.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/home.dart';
+import 'package:spacc_office/Home/home.dart';
 
 class Login extends StatefulWidget {
    Login({super.key});
@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var url = Uri.parse(
-          'http://cloud.spaccsoftware.com/hanan_api/alogin.php?unm=$unm&pwd=$pwd');
+          'http://cloud.spaccsoftware.com/hanan_api/test/alogin.php?unm=$unm&pwd=$pwd');
       final response = await http.get(url);
       return response;
     } else {
