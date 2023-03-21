@@ -234,7 +234,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                 onPressed: () {
                   Navigator.pop(context, true);
                  deletePayment();
-                  Navigator.push(context,
+                  Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => const PaymentReport()));
                 },
                 child: const Text('Yes'),
