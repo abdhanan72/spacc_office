@@ -139,7 +139,7 @@ class _PaymentReportState extends State<PaymentReport> {
                         var item = snapshot.data[index];
                         return InkWell(
                           onTap: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PaymentDetails(paynum:item['paynumber'] ,),
