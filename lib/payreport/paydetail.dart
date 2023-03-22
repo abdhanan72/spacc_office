@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/payreport/editpayment.dart';
 import 'package:spacc_office/payreport/payreport.dart';
 
 class PaymentDetails extends StatefulWidget {
@@ -16,6 +17,8 @@ class PaymentDetails extends StatefulWidget {
 
 class _PaymentDetailsState extends State<PaymentDetails> {
   final String url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+
+  String? date;
 
   Future<List<dynamic>> viewpayment() async {
     var response = await http.post(Uri.parse(url), body: {
@@ -49,6 +52,25 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                showdialog();
+              },
+              icon: const Icon(Icons.delete_rounded)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditPayment(
+                        paynum: widget.paynum,
+                        paydate: '',
+                      ),
+                    ));
+              },
+              icon: const Icon(Icons.edit))
+        ],
         title: const Text('Payment Details'),
       ),
       body: Column(
@@ -68,7 +90,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     TextEditingController(text: item['amount']);
                 TextEditingController memocontroller =
                     TextEditingController(text: item['memo']);
-
+               
                 return Expanded(
                   child: ListView.builder(
                     itemCount: 1,
@@ -164,11 +186,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             SizedBox(
                               height: mediaquery.height * 0.04,
                             ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showdialog();
-                                },
-                                child: const Text('DELETE'))
                           ],
                         ),
                       );
@@ -177,14 +194,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                 );
               } else if (snapshot.hasError) {
                 ScaffoldMessenger(child: Text(snapshot.error.toString()));
+              } else {
+                Center(
+                    child: SizedBox(
+                        height: mediaquery.height * 0.6,
+                        width: mediaquery.width * 0.7,
+                        child: Lottie.asset('assets/85023-no-data.json')));
               }
-              else{
-                Center(child: SizedBox(height: mediaquery.height*0.6,
-                width: mediaquery.width*0.7,
-                  
-                  child: Lottie.asset('assets/85023-no-data.json')));
-              }
-              
+
               return const CircularProgressIndicator();
             },
           ),
@@ -194,66 +211,61 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   }
 
   void deletePayment() async {
-  var response = await http.post(Uri.parse(url), body: {
-    'action': 'DELETE',
-    'fid': fid,
-    'paynumber': widget.paynum.toString()
-  });
-  var jsonResponse = jsonDecode(response.body);
-  var responseDesc = jsonResponse['response_desc'];
+    var response = await http.post(Uri.parse(url), body: {
+      'action': 'DELETE',
+      'fid': fid,
+      'paynumber': widget.paynum.toString()
+    });
+    var jsonResponse = jsonDecode(response.body);
+    var responseDesc = jsonResponse['response_desc'];
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(responseDesc),
-      duration: Duration(seconds: 2),
-    ),
-  );
-}
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(responseDesc),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
-
-    void showdialog() {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text('DELETE',
-                style: TextStyle(
-                    fontSize: MediaQuery.of(context).size. height * 0.03,
-                    fontWeight: FontWeight.bold)),
-            content: Column(
-              children: [
-                Lottie.asset('assets/100053-delete-bin.json',
-                    height: MediaQuery.of(context).size. height * 0.2),
-                const Text(
-                  'Are you sure you want to Delete this payment?',
-                )
-              ],
-            ),
-            actions: [
-              MaterialButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                 deletePayment();
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const PaymentReport()));
-                },
-                child: const Text('Yes'),
-              ),
-              MaterialButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('No'),
+  void showdialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('DELETE',
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  fontWeight: FontWeight.bold)),
+          content: Column(
+            children: [
+              Lottie.asset('assets/100053-delete-bin.json',
+                  height: MediaQuery.of(context).size.height * 0.2),
+              const Text(
+                'Are you sure you want to Delete this payment?',
               )
             ],
-          );
-        },
-      );
-    }
-
-
-
-
-
-
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+                deletePayment();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PaymentReport()));
+              },
+              child: const Text('Yes'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            )
+          ],
+        );
+      },
+    );
+  }
 }
