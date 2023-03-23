@@ -189,7 +189,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                   ),
                                 
                                 onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
                                 , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: datecontroller.text, fromcode: fromcode!,tocode: tocode!,),));
                                 
                               }, child:Text('Edit/Delete')),
