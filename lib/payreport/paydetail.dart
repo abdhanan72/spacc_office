@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/editpayment.dart';
@@ -35,6 +36,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     String? fid = prefs.getString('firm_id');
     return fid;
   }
+  String? fromcode;
+  String? tocode;
 
   String? fid;
   @override
@@ -52,25 +55,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                showdialog();
-              },
-              icon: const Icon(Icons.delete_rounded)),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPayment(
-                        paynum: widget.paynum,
-                        paydate: '',
-                      ),
-                    ));
-              },
-              icon: const Icon(Icons.edit))
-        ],
+      
         title: const Text('Payment Details'),
       ),
       body: Column(
@@ -80,8 +65,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               var item = snapshot.data[0];
               if (snapshot.hasData) {
-                TextEditingController datecontroller =
-                    TextEditingController(text: item['paydate']);
+               
                 TextEditingController paidtocontroller =
                     TextEditingController(text: item['acname']);
                 TextEditingController paymethodcontroller =
@@ -90,6 +74,14 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     TextEditingController(text: item['amount']);
                 TextEditingController memocontroller =
                     TextEditingController(text: item['memo']);
+                    String datestring=item['paydate'];
+                    DateTime dateTime = DateTime.parse(datestring);
+                    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
+                 TextEditingController datecontroller =
+                    TextEditingController(text: formattedDate);
+                    fromcode=item['accode'];
+                    tocode=item['paymethod'];
                
                 return Expanded(
                   child: ListView.builder(
@@ -186,6 +178,22 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             SizedBox(
                               height: mediaquery.height * 0.04,
                             ),
+
+                            SizedBox(
+                               height: mediaquery.height*0.05,
+                        width: mediaquery.width*0.3,
+                              child: ElevatedButton(
+                                
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
+                                  ),
+                                
+                                onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
+                                , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: datecontroller.text, fromcode: fromcode!,tocode: tocode!,),));
+                                
+                              }, child:Text('Edit/Delete')),
+                            )
                           ],
                         ),
                       );
@@ -210,62 +218,76 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     );
   }
 
-  void deletePayment() async {
-    var response = await http.post(Uri.parse(url), body: {
-      'action': 'DELETE',
-      'fid': fid,
-      'paynumber': widget.paynum.toString()
-    });
-    var jsonResponse = jsonDecode(response.body);
-    var responseDesc = jsonResponse['response_desc'];
+  
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(responseDesc),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 
-  void showdialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text('DELETE',
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.height * 0.03,
-                  fontWeight: FontWeight.bold)),
-          content: Column(
-            children: [
-              Lottie.asset('assets/100053-delete-bin.json',
-                  height: MediaQuery.of(context).size.height * 0.2),
-              const Text(
-                'Are you sure you want to Delete this payment?',
-              )
-            ],
-          ),
-          actions: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context, true);
-                deletePayment();
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PaymentReport()));
-              },
-              child: const Text('Yes'),
-            ),
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('No'),
-            )
-          ],
-        );
-      },
-    );
-  }
+// void deletePayment() async {
+
+
+
+
+//     var response = await http.post(Uri.parse(url), body: {
+//       'action': 'DELETE',
+//       'fid': fid,
+//       'paynumber': widget.paynum.toString()
+//     });
+//     var jsonResponse = jsonDecode(response.body);
+//     var responseDesc = jsonResponse['response_desc'];
+
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(
+//         content: Text(responseDesc),
+//         duration: Duration(seconds: 2),
+//       ),
+//     );
+//   }
+
+//   void showdialog() {
+//     showDialog(
+//       context: context,
+//       builder: (context) {
+//         return CupertinoAlertDialog(
+//           title: Text('DELETE',
+//               style: TextStyle(
+//                   fontSize: MediaQuery.of(context).size.height * 0.03,
+//                   fontWeight: FontWeight.bold)),
+//           content: Column(
+//             children: [
+//               Lottie.asset('assets/100053-delete-bin.json',
+//                   height: MediaQuery.of(context).size.height * 0.2),
+//               const Text(
+//                 'Are you sure you want to Delete this payment?',
+//               )
+//             ],
+//           ),
+//           actions: [
+//             MaterialButton(
+//               onPressed: () {
+//                 Navigator.pop(context, true);
+//                 deletePayment();
+//                 Navigator.pushReplacement(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) => const PaymentReport()));
+//               },
+//               child: const Text('Yes'),
+//             ),
+//             MaterialButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//               child: const Text('No'),
+//             )
+//           ],
+//         );
+//       },
+//     );
+//   }
+
+
+
+
+
+
+
 }

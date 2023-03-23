@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 Future<String?> getfname() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? fullname = prefs.getString('fullname');
+  late String? fullname = prefs.getString('fullname');
   return fullname;
 }
 
