@@ -508,7 +508,8 @@ class _EditPaymentState extends State<EditPayment> {
     final response = await http.post(Uri.parse(url), body: data);
     var result = jsonDecode(response.body);
 
-    if (result['response_code']==27) {
+    if (mounted) {
+      if (result['response_code']==27) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Payment Edit Succesfull')));
@@ -517,6 +518,8 @@ class _EditPaymentState extends State<EditPayment> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
               'Could not edit payment')));
+    }
+      
     }
   }
 
