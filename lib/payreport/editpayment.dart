@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/Home/home.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:spacc_office/payreport/paydetail.dart';
@@ -77,10 +78,6 @@ class _EditPaymentState extends State<EditPayment> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading:IconButton(onPressed: () {
-         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const PaymentReport(),));
-       }, icon:  Icon(Icons.arrow_back_ios_new)),
         title: const Text('EditPayment'),
       ),
       body: SingleChildScrollView(
@@ -574,7 +571,7 @@ const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PaymentReport()));
+                        builder: (context) => const HomePage()));
               },
               child: const Text('Yes'),
             ),
