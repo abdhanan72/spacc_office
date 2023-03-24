@@ -76,10 +76,11 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     TextEditingController(text: item['memo']);
                     String datestring=item['paydate'];
                     DateTime dateTime = DateTime.parse(datestring);
-                    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+                    String formattedshow = DateFormat('dd-MMM-yyyy').format(dateTime);
+                    String formattedfor = DateFormat('yyyy-MM-dd').format(dateTime);
 
                  TextEditingController datecontroller =
-                    TextEditingController(text: formattedDate);
+                    TextEditingController(text: formattedshow);
                     fromcode=item['accode'];
                     tocode=item['paymethod'];
                
@@ -190,7 +191,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                 
                                 onPressed: () {
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
-                                , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: datecontroller.text, fromcode: fromcode!,tocode: tocode!,),));
+                                , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: formattedfor, fromcode: fromcode!,tocode: tocode!,),));
                                 
                               }, child:const Text('Edit/Delete')),
                             )

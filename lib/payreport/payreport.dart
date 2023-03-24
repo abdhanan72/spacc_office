@@ -18,8 +18,8 @@ class _PaymentReportState extends State<PaymentReport> {
   Future<List<dynamic>> _fetchData() async {
     var response = await http.post(Uri.parse(url), body: {
       'action': 'LIST',
-      'date1': fromdate.text,
-      'date2': todate.text,
+      'date1': apidate1,
+      'date2': apidate2,
       'fid': fid,
     });
     var data = jsonDecode(response.body);
@@ -31,6 +31,11 @@ class _PaymentReportState extends State<PaymentReport> {
     String? fid = prefs.getString('firm_id');
     return fid;
   }
+  String? apidate1;
+  String? apidate2;
+
+  String formattedfor = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String formattedshow = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
   @override
   void initState() {
@@ -39,6 +44,10 @@ class _PaymentReportState extends State<PaymentReport> {
         fid = value!;
       });
     });
+    apidate1=formattedfor;
+    apidate2=formattedfor;
+    fromdate.text=formattedshow;
+    todate.text=formattedshow;
     super.initState();
   }
 
@@ -75,9 +84,12 @@ class _PaymentReportState extends State<PaymentReport> {
 
                 if (pickdate != null) {
                   String formateddate =
-                      DateFormat("yyyy-MM-dd").format(pickdate);
+                      DateFormat("dd-MMM-yyyy").format(pickdate);
+
+                      String setdate1=DateFormat("yyyy-MM-dd").format(pickdate);
                   setState(() {
                     fromdate.text = formateddate.toString();
+                    apidate1=setdate1;
                   });
                 } else {}
               },
@@ -103,9 +115,11 @@ class _PaymentReportState extends State<PaymentReport> {
 
                 if (pickeddate != null) {
                   String formatdate =
-                      DateFormat("yyyy-MM-dd").format(pickeddate);
+                      DateFormat("dd-MMM-yyyy").format(pickeddate);
+                       String setdate2=DateFormat("yyyy-MM-dd").format(pickeddate);
                   setState(() {
                     todate.text = formatdate.toString();
+                    apidate2=setdate2;
                   });
                 } else {
                   print('Invalid date');
@@ -219,47 +233,32 @@ class _PaymentReportState extends State<PaymentReport> {
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          Text('Paid to:'),
+                                          Text('Amount:')
+                                        ],
+                                      ),
+                                      Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          RichText(
-                                            text: TextSpan(
-                                              text: 'Paid to: ',
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                
-                                                color: Colors.black,
-                                              ),
-                                              children: [
-                                                TextSpan(
-                                                  text: '${item['acname']}',
-                                                  style:const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
+                                          Text(
+                                            
+                                            item['acname'],
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
                                             ),
+                                          Row(
+                                            children: [
+                                               Icon(
+                                            
+                                            Icons.currency_rupee,size: mediaquery.height*0.02,),
+                                              Text(item['amount'],
+                                           style: const TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
                                           ),
-                                          RichText(
-                                            text: TextSpan(
-                                              text: 'Amount: ',
-                                              style:const TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                
-                                                color: Colors.black,
-                                              ),
-                                              children: [
-                                                TextSpan(
-                                                  text: '${item['amount']}',
-                                                  style:const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    
-                                                    color: Colors.red,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                         
+                                            ],
+                                          )
                                           
                                         ],
                                       )

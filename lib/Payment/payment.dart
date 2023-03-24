@@ -34,6 +34,9 @@ class _PaymentState extends State<Payment> {
   String? action;
   final FocusNode _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  String? apidate1;
+    String formattedfor = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String formattedshow = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
   @override
   void initState() {
@@ -42,11 +45,11 @@ class _PaymentState extends State<Payment> {
     balance = '---';
     tocode = '';
     fromcode = '';
+    apidate1=formattedfor;
+    date.text=formattedshow;
     getFirmId().then((value) {
       setState(() {
         firmId = value!;
-        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-        date.text = formattedDate;
       });
     });
   }
@@ -112,7 +115,7 @@ class _PaymentState extends State<Payment> {
       'fid': firmId,
       'accode': fromcode,
       'paymethod': tocode,
-      'paydate': date.text,
+      'paydate': apidate1,
       'memo': memo.text,
       'amount': amount.text
     };
@@ -176,10 +179,13 @@ class _PaymentState extends State<Payment> {
 
                       if (pickdate != null) {
                         String formateddate =
-                            DateFormat("yyyy-MM-dd").format(pickdate);
-                        setState(() {
-                          date.text = formateddate.toString();
-                        });
+                      DateFormat("dd-MMM-yyyy").format(pickdate);
+
+                      String setdate1=DateFormat("yyyy-MM-dd").format(pickdate);
+                  setState(() {
+                    date.text = formateddate.toString();
+                    apidate1=setdate1;
+                  });
                       } else {}
                     },
                   ),

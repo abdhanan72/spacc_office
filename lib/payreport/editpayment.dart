@@ -51,20 +51,29 @@ class _EditPaymentState extends State<EditPayment> {
 
   String? fid;
 
+ 
+
+  String? pdt;
   String? Query;
   String? searchQuery;
   String? tocode;
   String? fromcode;
+   String? formattedfor;
   final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
+    String pdt=widget.paydate;
+    DateTime paydate = DateTime.parse(pdt);
+    String formattedshow = DateFormat('dd-MMM-yyyy').format(paydate);
+    formattedfor = DateFormat('yyyy-MM-dd').format(paydate);
+
     fromcode = widget.fromcode;
     tocode = widget.tocode;
     paidtocontroller.text = widget.paidto;
     paymethodcontroller.text = widget.paymentMethod;
     amountcontroller.text = widget.amount;
     memocontroller.text = widget.memo;
-    datecontroller.text = widget.paydate;
+    datecontroller.text = formattedshow;
     getFirmId().then((value) {
       setState(() {
         fid = value!;
@@ -494,7 +503,7 @@ class _EditPaymentState extends State<EditPayment> {
       'fid': fid,
       'accode': fromcode,
       'paymethod': tocode,
-      'paydate': datecontroller.text,
+      'paydate': formattedfor,
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
       'paynumber': widget.paynum.toString(),
