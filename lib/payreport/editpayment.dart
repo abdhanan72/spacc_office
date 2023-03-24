@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/Home/home.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:http/http.dart' as http;
-import 'package:spacc_office/payreport/paydetail.dart';
 import 'package:spacc_office/payreport/payreport.dart';
-
 import '../Payment/getheads.dart';
+
 
 class EditPayment extends StatefulWidget {
   final int paynum;
@@ -464,7 +462,7 @@ class _EditPaymentState extends State<EditPayment> {
                                   builder: (context) => const PaymentReport(),
                                 ));
                           },
-                          child: const Text('Edit')),
+                          child: const Text('Save')),
                     ),
                     SizedBox(
                       height: mediaquery.height * 0.05,
@@ -530,10 +528,11 @@ class _EditPaymentState extends State<EditPayment> {
     var responseDesc = jsonResponse['response_desc'];
     
 
+    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(responseDesc),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

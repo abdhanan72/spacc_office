@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/editpayment.dart';
-import 'package:spacc_office/payreport/payreport.dart';
+
 
 class PaymentDetails extends StatefulWidget {
   final int paynum;
@@ -192,7 +192,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
                                 , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: datecontroller.text, fromcode: fromcode!,tocode: tocode!,),));
                                 
-                              }, child:Text('Edit/Delete')),
+                              }, child:const Text('Edit/Delete')),
                             )
                           ],
                         ),
@@ -217,77 +217,5 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       ),
     );
   }
-
-  
-
-
-// void deletePayment() async {
-
-
-
-
-//     var response = await http.post(Uri.parse(url), body: {
-//       'action': 'DELETE',
-//       'fid': fid,
-//       'paynumber': widget.paynum.toString()
-//     });
-//     var jsonResponse = jsonDecode(response.body);
-//     var responseDesc = jsonResponse['response_desc'];
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text(responseDesc),
-//         duration: Duration(seconds: 2),
-//       ),
-//     );
-//   }
-
-//   void showdialog() {
-//     showDialog(
-//       context: context,
-//       builder: (context) {
-//         return CupertinoAlertDialog(
-//           title: Text('DELETE',
-//               style: TextStyle(
-//                   fontSize: MediaQuery.of(context).size.height * 0.03,
-//                   fontWeight: FontWeight.bold)),
-//           content: Column(
-//             children: [
-//               Lottie.asset('assets/100053-delete-bin.json',
-//                   height: MediaQuery.of(context).size.height * 0.2),
-//               const Text(
-//                 'Are you sure you want to Delete this payment?',
-//               )
-//             ],
-//           ),
-//           actions: [
-//             MaterialButton(
-//               onPressed: () {
-//                 Navigator.pop(context, true);
-//                 deletePayment();
-//                 Navigator.pushReplacement(
-//                     context,
-//                     MaterialPageRoute(
-//                         builder: (context) => const PaymentReport()));
-//               },
-//               child: const Text('Yes'),
-//             ),
-//             MaterialButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//               child: const Text('No'),
-//             )
-//           ],
-//         );
-//       },
-//     );
-//   }
-
-
-
-
-
-
 
 }

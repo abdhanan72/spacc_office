@@ -14,7 +14,6 @@ class PaymentReport extends StatefulWidget {
 
 class _PaymentReportState extends State<PaymentReport> {
   final String url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
-  
 
   Future<List<dynamic>> _fetchData() async {
     var response = await http.post(Uri.parse(url), body: {
@@ -32,15 +31,6 @@ class _PaymentReportState extends State<PaymentReport> {
     String? fid = prefs.getString('firm_id');
     return fid;
   }
-
-
-
-  
-
-
-
-
-
 
   @override
   void initState() {
@@ -145,13 +135,20 @@ class _PaymentReportState extends State<PaymentReport> {
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                        var item = snapshot.data[index];
+                         var item = snapshot.data[index];
+                         String dt=snapshot.data[index]['paydate'];
+                          DateTime dateTime = DateTime.parse(dt);
+                          String formattedDate = DateFormat('dd-MMM-yyyy').format(dateTime);
+                        
+                       
                         return InkWell(
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PaymentDetails(paynum:item['paynumber'] ,),
+                                  builder: (context) => PaymentDetails(
+                                    paynum: item['paynumber'],
+                                  ),
                                 ));
                           },
                           child: Padding(
@@ -159,32 +156,115 @@ class _PaymentReportState extends State<PaymentReport> {
                                 left: mediaquery.width * 0.02,
                                 right: mediaquery.width * 0.02,
                               ),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Divider(
-                                      thickness: mediaquery.height * 0.00125,
-                                      color: Colors.black,
-                                    ),
-                                    SizedBox(height: mediaquery.height * 0.002),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('#${item['paynumber']}'),
-                                        Text('Date:${item['paydate']}'),
-                                      ],
-                                    ),
-                                    SizedBox(height: mediaquery.height * 0.02),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Paid to:${item['acname']}'),
-                                        Text('Amount:${item['amount']}')
-                                      ],
-                                    )
-                                  ])),
+                              child: SizedBox(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Divider(
+                                        thickness: mediaquery.height * 0.00125,
+                                        color: Colors.black,
+                                      ),
+                                      SizedBox(
+                                          height: mediaquery.height * 0.003),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              text: '#: ',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '${item['paynumber']}',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              text: 'Date: ',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: formattedDate,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          
+                                        ],
+                                      ),
+                                      SizedBox(
+                                          height: mediaquery.height * 0.03),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              text: 'Paid to: ',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '${item['acname']}',
+                                                  style:const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              text: 'Amount: ',
+                                              style:const TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: '${item['amount']}',
+                                                  style:const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          
+                                        ],
+                                      )
+                                    ]),
+                              )),
                         );
                       },
                     ),
