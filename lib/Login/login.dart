@@ -81,6 +81,8 @@ void _saveForm(http.Response response) async {
         await prefs.setString('firm_id', fid);
         var fullname = jsonData["data"]["fullname"];
         await prefs.setString('fullname', fullname);
+        var username = jsonData["data"]["user_name"];
+        await prefs.setString('user_name', username);
       }
       await prefs.setBool('isLoggedIn', true);
     }
@@ -216,6 +218,8 @@ void _saveForm(http.Response response) async {
                                     var fullname =
                                         responseBody["data"]["fullname"];
                                     await prefs.setString('fullname', fullname);
+                                    var username=responseBody["data"]["user_name"];
+                                    await prefs.setString('user_name', username);
                                     _saveForm(response);
                                     Navigator.pushReplacement(
                                         context,

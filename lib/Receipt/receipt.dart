@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ReceiptEntry extends StatefulWidget {
@@ -11,24 +9,24 @@ class ReceiptEntry extends StatefulWidget {
 }
 
 class _ReceiptEntryState extends State<ReceiptEntry> {
-  String? username;
-
-  Future<String?> getusername() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? username = prefs.getString('username');
-    return username;
-  }
+  String? userName;
+ 
 
   @override
-  void initState() async {
-    getusername().then((value) {
+  void initState() {
+    getUserName().then((value) {
       setState(() {
-        username = value!;
+        userName = value!;
       });
     });
-    print(username);
 
     super.initState();
+  }
+
+  Future<String?> getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userName = prefs.getString('user_name');
+    return userName;
   }
 
   @override
@@ -37,7 +35,7 @@ class _ReceiptEntryState extends State<ReceiptEntry> {
       appBar: AppBar(
         title: const Text('Receipt Entry'),
       ),
-      body: Center(child: Text('Sn')),
+      body:  Center(child: Text(userName!)),
     );
   }
 }

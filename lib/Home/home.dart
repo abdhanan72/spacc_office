@@ -8,7 +8,6 @@ import 'package:spacc_office/payreport/payreport.dart';
 import '../Login/login.dart';
 import '../Payment/payment.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -22,17 +21,18 @@ Future<String?> getfname() async {
   return fullname;
 }
 
-  String? fullname;
+String? fullname;
 
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-
     getfname().then((value) {
       setState(() {
         fullname = value!;
       });
     });
+    
+    
     super.initState();
   }
 
@@ -111,6 +111,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: mediaquery.size.height * 0.08,
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -130,15 +131,16 @@ class _HomePageState extends State<HomePage> {
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
-
-
-                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceiptEntry(),));
-                        },
-                        child: const Menuitem(imagePath: 'assets/bill.png', text: 'Receipt Entry'))
-
-                      
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ReceiptEntry(),
+                        ));
+                  },
+                  child: const Menuitem(
+                      imagePath: 'assets/bill.png', text: 'Receipt Entry'))
             ],
           ),
           SizedBox(
@@ -147,16 +149,15 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-             
-                      GestureDetector(
-                        
-                        onTap:() => Navigator.push(
+              GestureDetector(
+                  onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const PaymentReport(),
                       )),
-                        child: const Menuitem(imagePath: 'assets/report.png', text: 'Payment Report')),
-                         GestureDetector(
+                  child: const Menuitem(
+                      imagePath: 'assets/report.png', text: 'Payment Report')),
+              GestureDetector(
                   onTap: () {
                     showdialog();
                   },
