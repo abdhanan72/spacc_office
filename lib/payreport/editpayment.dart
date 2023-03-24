@@ -542,7 +542,7 @@ class _EditPaymentState extends State<EditPayment> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(responseDesc),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
