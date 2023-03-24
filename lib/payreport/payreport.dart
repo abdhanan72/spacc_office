@@ -121,9 +121,7 @@ class _PaymentReportState extends State<PaymentReport> {
                     todate.text = formatdate.toString();
                     apidate2=setdate2;
                   });
-                } else {
-                  print('Invalid date');
-                }
+                } 
               },
             ),
           ),
@@ -155,7 +153,7 @@ class _PaymentReportState extends State<PaymentReport> {
                 DateTime dateTime = dateFormat.parse(dt);
                 String formattedshow =
                     DateFormat('dd-MMM-yyyy').format(dateTime);
-                String formattedfor = DateFormat('yyyy-MM-dd').format(dateTime);
+                
                         
                        
                         return InkWell(
@@ -165,6 +163,7 @@ class _PaymentReportState extends State<PaymentReport> {
                                 MaterialPageRoute(
                                   builder: (context) => PaymentDetails(
                                     paynum: item['paynumber'],
+                                    fid: fid!,
                                   ),
                                 ));
                           },

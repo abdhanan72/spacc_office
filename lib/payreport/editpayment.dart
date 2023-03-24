@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:spacc_office/payreport/payreport.dart';
 import '../Payment/getheads.dart';
 
-
 class EditPayment extends StatefulWidget {
   final int paynum;
   final String paidto;
@@ -51,22 +50,19 @@ class _EditPaymentState extends State<EditPayment> {
 
   String? fid;
 
- 
-
   String? pdt;
-  String? Query;
+  String? query;
   String? searchQuery;
   String? tocode;
   String? fromcode;
-   String? formattedfor;
+  String? formattedfor;
   final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
-    String pdt=widget.paydate;
-   
-                DateTime dateTime = DateTime.parse(pdt);
-                String formattedshow =
-                    DateFormat('dd-MMM-yyyy').format(dateTime);
+    String pdt = widget.paydate;
+
+    DateTime dateTime = DateTime.parse(pdt);
+    String formattedshow = DateFormat('dd-MMM-yyyy').format(dateTime);
     fromcode = widget.fromcode;
     tocode = widget.tocode;
     paidtocontroller.text = widget.paidto;
@@ -310,7 +306,7 @@ class _EditPaymentState extends State<EditPayment> {
                                     ),
                                     onChanged: (value) {
                                       setState(() {
-                                        Query = value;
+                                        query = value;
                                       });
                                     },
                                   ),
@@ -326,7 +322,7 @@ class _EditPaymentState extends State<EditPayment> {
                                             .where((item) => item.headName
                                                 .toLowerCase()
                                                 .contains(
-                                                    Query?.toLowerCase() ?? ''))
+                                                    query?.toLowerCase() ?? ''))
                                             .toList();
 
                                         return SizedBox(
@@ -463,7 +459,6 @@ class _EditPaymentState extends State<EditPayment> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           onPressed: () {
-                            
                             Navigator.pop(context);
                             editpayment();
                             Navigator.pushReplacement(
@@ -511,18 +506,17 @@ class _EditPaymentState extends State<EditPayment> {
     };
 
     final response = await http.post(Uri.parse(url), body: data);
+    var result = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      print(result);
-      
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Payment Edit Succesfull')));
-           
+    if (result['response_code']==27) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Payment Edit Succesfull')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
-              'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
+              'Could not edit payment')));
     }
   }
 
@@ -534,17 +528,18 @@ class _EditPaymentState extends State<EditPayment> {
       'fid': fid,
       'paynumber': widget.paynum.toString()
     });
+
     var jsonResponse = jsonDecode(response.body);
     var responseDesc = jsonResponse['response_desc'];
-    
 
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(responseDesc),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(responseDesc),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   void showdialog() {

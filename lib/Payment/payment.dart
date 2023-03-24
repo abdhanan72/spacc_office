@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentState extends State<Payment> {
-  String? Query;
+  String? query;
   final TextEditingController amount = TextEditingController();
   late String balance;
   final TextEditingController date = TextEditingController();
@@ -31,22 +32,21 @@ class _PaymentState extends State<Payment> {
   late String tocode;
   final TextEditingController tocontroller = TextEditingController();
   final TextEditingController tocontroller2 = TextEditingController();
-  String? action;
   final FocusNode _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   String? apidate1;
-    String formattedfor = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String formattedfor = DateFormat('yyyy-MM-dd').format(DateTime.now());
   String formattedshow = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
   @override
   void initState() {
     super.initState();
-    action = 'CREATE';
+    
     balance = '---';
     tocode = '';
     fromcode = '';
-    apidate1=formattedfor;
-    date.text=formattedshow;
+    apidate1 = formattedfor;
+    date.text = formattedshow;
     getFirmId().then((value) {
       setState(() {
         firmId = value!;
@@ -56,7 +56,7 @@ class _PaymentState extends State<Payment> {
 
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? firmId =  prefs.getString('firm_id');
+    String? firmId = prefs.getString('firm_id');
     return firmId;
   }
 
@@ -81,6 +81,7 @@ class _PaymentState extends State<Payment> {
           actions: [
             MaterialButton(
               onPressed: () {
+                
                 _postPayment();
                 fromcontroller.clear();
                 from2controller.clear();
@@ -107,11 +108,11 @@ class _PaymentState extends State<Payment> {
     );
   }
 
-  void _postPayment() async {
+   void _postPayment() async {
     const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
 
     final data = {
-      'action': action,
+      'action': 'CREATE',
       'fid': firmId,
       'accode': fromcode,
       'paymethod': tocode,
@@ -121,16 +122,19 @@ class _PaymentState extends State<Payment> {
     };
 
     final response = await http.post(Uri.parse(url), body: data);
+    final result = jsonDecode(response.body);
+    
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      print(result);
+    if (result["response_code"] == 27) {
+      
+      
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Payment successfully posted')));
+          .showSnackBar(const SnackBar(content: Text('Payment successfully posted')));
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'Failed to post payment. Error ${response.statusCode}: ${response.reasonPhrase}')));
+          content: Text(result["response_desc"])));
     }
   }
 
@@ -179,13 +183,14 @@ class _PaymentState extends State<Payment> {
 
                       if (pickdate != null) {
                         String formateddate =
-                      DateFormat("dd-MMM-yyyy").format(pickdate);
+                            DateFormat("dd-MMM-yyyy").format(pickdate);
 
-                      String setdate1=DateFormat("yyyy-MM-dd").format(pickdate);
-                  setState(() {
-                    date.text = formateddate.toString();
-                    apidate1=setdate1;
-                  });
+                        String setdate1 =
+                            DateFormat("yyyy-MM-dd").format(pickdate);
+                        setState(() {
+                          date.text = formateddate.toString();
+                          apidate1 = setdate1;
+                        });
                       } else {}
                     },
                   ),
@@ -412,7 +417,7 @@ class _PaymentState extends State<Payment> {
                                     ),
                                     onChanged: (value) {
                                       setState(() {
-                                        Query = value;
+                                        query = value;
                                       });
                                     },
                                   ),
@@ -428,7 +433,7 @@ class _PaymentState extends State<Payment> {
                                             .where((item) => item.headName
                                                 .toLowerCase()
                                                 .contains(
-                                                    Query?.toLowerCase() ?? ''))
+                                                    query?.toLowerCase() ?? ''))
                                             .toList();
 
                                         return SizedBox(

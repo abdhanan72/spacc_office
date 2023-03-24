@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spacc_office/payreport/payreport.dart';
+
 
 import 'Login/login.dart';
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: const Color(0xff000080),
         )),
-        home: Login()
+        home: const Login()
         
         );
   }

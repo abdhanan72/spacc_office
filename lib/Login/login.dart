@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Home/home.dart';
 
 class Login extends StatefulWidget {
-   Login({super.key});
+   const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -59,6 +59,7 @@ class _LoginState extends State<Login> {
       final response = await http.get(url);
       return response;
     } else {
+      // ignore: null_argument_to_non_null_type
       return Future.value(null);
     }
   }
@@ -221,12 +222,14 @@ void _saveForm(http.Response response) async {
                                     var username=responseBody["data"]["user_name"];
                                     await prefs.setString('user_name', username);
                                     _saveForm(response);
+                                    // ignore: use_build_context_synchronously
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => const HomePage(),
                                         ));
                                   } else {
+                                    // ignore: use_build_context_synchronously
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content:
@@ -234,6 +237,7 @@ void _saveForm(http.Response response) async {
                                     ));
                                   }
                                 } else {
+                                  // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text('Login Failed'),

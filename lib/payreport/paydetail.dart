@@ -8,7 +8,8 @@ import 'package:spacc_office/payreport/editpayment.dart';
 
 class PaymentDetails extends StatefulWidget {
   final int paynum;
-  const PaymentDetails({super.key, required this.paynum});
+  final String fid;
+  const PaymentDetails({super.key, required this.paynum, required this.fid});
 
   @override
   State<PaymentDetails> createState() => _PaymentDetailsState();
@@ -17,18 +18,18 @@ class PaymentDetails extends StatefulWidget {
 class _PaymentDetailsState extends State<PaymentDetails> {
   final String url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
 
-  String? date;
+  
 
   Future<List<dynamic>> viewpayment() async {
     var response = await http.post(Uri.parse(url), body: {
       'action': 'VIEW',
-      'fid': fid,
+      'fid': widget.fid,
       'paynumber': widget.paynum.toString()
     });
     var data = jsonDecode(response.body);
     return data['data'];
   }
-
+String? date;
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? fid = prefs.getString('firm_id');
@@ -38,7 +39,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
   String? fromcode;
   String? tocode;
 
-  String? fid;
+  
   @override
   void initState() {
     getFirmId().then((value) {
@@ -48,6 +49,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     });
     super.initState();
   }
+  String? fid;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +63,8 @@ class _PaymentDetailsState extends State<PaymentDetails> {
           FutureBuilder(
             future: viewpayment(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
-              var item = snapshot.data[0];
               if (snapshot.hasData) {
+                var item = snapshot.data[0];
                 TextEditingController paidtocontroller =
                     TextEditingController(text: item['acname']);
                 TextEditingController paymethodcontroller =
@@ -188,7 +190,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                                           borderRadius:
                                               BorderRadius.circular(20))),
                                   onPressed: () {
-                                    
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
@@ -223,7 +224,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                         child: Lottie.asset('assets/85023-no-data.json')));
               }
 
-              return const CircularProgressIndicator();
+              return const Center(child:  CircularProgressIndicator());
             },
           ),
         ],

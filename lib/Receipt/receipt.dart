@@ -35,7 +35,16 @@ class _ReceiptEntryState extends State<ReceiptEntry> {
       appBar: AppBar(
         title: const Text('Receipt Entry'),
       ),
-      body:  Center(child: Text(userName!)),
+      body: Column(mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+          if(userName!=null)
+          Center(child: Text(userName!))
+
+        ],
+      )
+      
+      
     );
   }
 }

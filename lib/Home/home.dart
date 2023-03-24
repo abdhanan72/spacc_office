@@ -15,13 +15,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-Future<String?> getfname() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  late String? fullname = prefs.getString('fullname');
-  return fullname;
-}
 
-String? fullname;
+
+ String? fullname;
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -35,12 +31,17 @@ class _HomePageState extends State<HomePage> {
     
     super.initState();
   }
+  Future<String?> getfname() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  late String? fullname = prefs.getString('fullname');
+  return fullname;
+}
 
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context);
 
-    Future<void> _clearData() async {
+    Future<void> clearData() async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.clear();
     }
@@ -67,9 +68,9 @@ class _HomePageState extends State<HomePage> {
               MaterialButton(
                 onPressed: () {
                   Navigator.pop(context, true);
-                  _clearData();
+                  clearData();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Login()));
+                      MaterialPageRoute(builder: (context) => const Login()));
                 },
                 child: const Text('Yes'),
               ),
@@ -101,6 +102,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: mediaquery.size.height * 0.03,
           ),
+          if(fullname!=null)
           Text(
             fullname!,
             style: const TextStyle(
@@ -132,13 +134,11 @@ class _HomePageState extends State<HomePage> {
                   child: const Menuitem(
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
               GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const ReceiptEntry(),
-                        ));
-                  },
+                        )),
                   child: const Menuitem(
                       imagePath: 'assets/bill.png', text: 'Receipt Entry'))
             ],
