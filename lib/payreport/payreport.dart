@@ -151,8 +151,11 @@ class _PaymentReportState extends State<PaymentReport> {
                       itemBuilder: (BuildContext context, int index) {
                          var item = snapshot.data[index];
                          String dt=snapshot.data[index]['paydate'];
-                          DateTime dateTime = DateTime.parse(dt);
-                          String formattedDate = DateFormat('dd-MMM-yyyy').format(dateTime);
+                          final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ssZ');
+                DateTime dateTime = dateFormat.parse(dt);
+                String formattedshow =
+                    DateFormat('dd-MMM-yyyy').format(dateTime);
+                String formattedfor = DateFormat('yyyy-MM-dd').format(dateTime);
                         
                        
                         return InkWell(
@@ -215,7 +218,7 @@ class _PaymentReportState extends State<PaymentReport> {
                                               ),
                                               children: [
                                                 TextSpan(
-                                                  text: formattedDate,
+                                                  text: formattedshow,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     

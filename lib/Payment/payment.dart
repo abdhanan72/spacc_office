@@ -56,7 +56,7 @@ class _PaymentState extends State<Payment> {
 
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? firmId = await prefs.getString('firm_id');
+    String? firmId =  prefs.getString('firm_id');
     return firmId;
   }
 

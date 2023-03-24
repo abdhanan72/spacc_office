@@ -63,10 +63,10 @@ class _EditPaymentState extends State<EditPayment> {
   @override
   void initState() {
     String pdt=widget.paydate;
-    DateTime paydate = DateTime.parse(pdt);
-    String formattedshow = DateFormat('dd-MMM-yyyy').format(paydate);
-    formattedfor = DateFormat('yyyy-MM-dd').format(paydate);
-
+   
+                DateTime dateTime = DateTime.parse(pdt);
+                String formattedshow =
+                    DateFormat('dd-MMM-yyyy').format(dateTime);
     fromcode = widget.fromcode;
     tocode = widget.tocode;
     paidtocontroller.text = widget.paidto;
@@ -463,6 +463,7 @@ class _EditPaymentState extends State<EditPayment> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           onPressed: () {
+                            
                             Navigator.pop(context);
                             editpayment();
                             Navigator.pushReplacement(
@@ -503,7 +504,7 @@ class _EditPaymentState extends State<EditPayment> {
       'fid': fid,
       'accode': fromcode,
       'paymethod': tocode,
-      'paydate': formattedfor,
+      'paydate': widget.paydate,
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
       'paynumber': widget.paynum.toString(),

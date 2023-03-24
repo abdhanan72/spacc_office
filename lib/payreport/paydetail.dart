@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -6,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/editpayment.dart';
-
 
 class PaymentDetails extends StatefulWidget {
   final int paynum;
@@ -36,6 +34,7 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     String? fid = prefs.getString('firm_id');
     return fid;
   }
+
   String? fromcode;
   String? tocode;
 
@@ -55,7 +54,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-      
         title: const Text('Payment Details'),
       ),
       body: Column(
@@ -65,7 +63,6 @@ class _PaymentDetailsState extends State<PaymentDetails> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               var item = snapshot.data[0];
               if (snapshot.hasData) {
-               
                 TextEditingController paidtocontroller =
                     TextEditingController(text: item['acname']);
                 TextEditingController paymethodcontroller =
@@ -74,16 +71,19 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                     TextEditingController(text: item['amount']);
                 TextEditingController memocontroller =
                     TextEditingController(text: item['memo']);
-                    String datestring=item['paydate'];
-                    DateTime dateTime = DateTime.parse(datestring);
-                    String formattedshow = DateFormat('dd-MMM-yyyy').format(dateTime);
-                    String formattedfor = DateFormat('yyyy-MM-dd').format(dateTime);
+                String dt = item['paydate'];
 
-                 TextEditingController datecontroller =
+                final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ssZ');
+                DateTime dateTime = dateFormat.parse(dt);
+                String formattedshow =
+                    DateFormat('dd-MMM-yyyy').format(dateTime);
+                String formattedfor = DateFormat('yyyy-MM-dd').format(dateTime);
+
+                TextEditingController datecontroller =
                     TextEditingController(text: formattedshow);
-                    fromcode=item['accode'];
-                    tocode=item['paymethod'];
-               
+                fromcode = item['accode'];
+                tocode = item['paymethod'];
+
                 return Expanded(
                   child: ListView.builder(
                     itemCount: 1,
@@ -179,21 +179,33 @@ class _PaymentDetailsState extends State<PaymentDetails> {
                             SizedBox(
                               height: mediaquery.height * 0.04,
                             ),
-
                             SizedBox(
-                               height: mediaquery.height*0.05,
-                        width: mediaquery.width*0.3,
+                              height: mediaquery.height * 0.05,
+                              width: mediaquery.width * 0.3,
                               child: ElevatedButton(
-                                
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
-                                  ),
-                                
-                                onPressed: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => EditPayment(paynum: widget.paynum
-                                , paidto: paidtocontroller.text, paymentMethod:paymethodcontroller.text, amount: amountcontroller.text, memo: memocontroller.text, paydate: formattedfor, fromcode: fromcode!,tocode: tocode!,),));
-                                
-                              }, child:const Text('Edit/Delete')),
+                                  style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20))),
+                                  onPressed: () {
+                                    
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditPayment(
+                                            paynum: widget.paynum,
+                                            paidto: paidtocontroller.text,
+                                            paymentMethod:
+                                                paymethodcontroller.text,
+                                            amount: amountcontroller.text,
+                                            memo: memocontroller.text,
+                                            paydate: formattedfor,
+                                            fromcode: fromcode!,
+                                            tocode: tocode!,
+                                          ),
+                                        ));
+                                  },
+                                  child: const Text('Edit/Delete')),
                             )
                           ],
                         ),
@@ -218,5 +230,4 @@ class _PaymentDetailsState extends State<PaymentDetails> {
       ),
     );
   }
-
 }
