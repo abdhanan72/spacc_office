@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Order/order.dart';
+import 'package:spacc_office/Receipt/receipt.dart';
 import 'package:spacc_office/payreport/payreport.dart';
 import '../Login/login.dart';
 import '../Payment/payment.dart';
@@ -130,6 +131,23 @@ class _HomePageState extends State<HomePage> {
                   child: const Menuitem(
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
 
+
+                       GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ReceiptEntry(),));
+                        },
+                        child: const Menuitem(imagePath: 'assets/bill.png', text: 'Receipt Entry'))
+
+                      
+            ],
+          ),
+          SizedBox(
+            height: mediaquery.size.height * 0.05,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+             
                       GestureDetector(
                         
                         onTap:() => Navigator.push(
@@ -137,21 +155,13 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(
                         builder: (context) => const PaymentReport(),
                       )),
-                        child: const Menuitem(imagePath: 'assets/report.png', text: 'Payment Report'))
-            ],
-          ),
-          SizedBox(
-            height: mediaquery.size.height * 0.05,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
+                        child: const Menuitem(imagePath: 'assets/report.png', text: 'Payment Report')),
+                         GestureDetector(
                   onTap: () {
                     showdialog();
                   },
                   child: const Menuitem(
-                      imagePath: 'assets/logout.png', text: 'Logout'))
+                      imagePath: 'assets/logout.png', text: 'Logout')),
             ],
           )
         ],
