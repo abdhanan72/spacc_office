@@ -29,7 +29,9 @@ class EditPayment extends StatefulWidget {
       required this.paymentMethod,
       required this.amount,
       required this.memo,
-      required this.paydate, required this.fromcode, required this.tocode});
+      required this.paydate,
+      required this.fromcode,
+      required this.tocode});
 
   @override
   State<EditPayment> createState() => _EditPaymentState();
@@ -50,16 +52,16 @@ class _EditPaymentState extends State<EditPayment> {
   }
 
   String? fid;
-  
+
   String? Query;
   String? searchQuery;
-   String? tocode;
-   String? fromcode;
+  String? tocode;
+  String? fromcode;
   final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
     fromcode = widget.fromcode;
-    tocode=widget.tocode;
+    tocode = widget.tocode;
     paidtocontroller.text = widget.paidto;
     paymethodcontroller.text = widget.paymentMethod;
     amountcontroller.text = widget.amount;
@@ -103,7 +105,7 @@ class _EditPaymentState extends State<EditPayment> {
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100));
-      
+
                         if (pickdate != null) {
                           String formateddate =
                               DateFormat("yyyy-MM-dd").format(pickdate);
@@ -177,11 +179,11 @@ class _EditPaymentState extends State<EditPayment> {
                                         var filteredData = data!
                                             .where((item) => item.headName
                                                 .toLowerCase()
-                                                .contains(
-                                                    searchQuery?.toLowerCase() ??
-                                                        ''))
+                                                .contains(searchQuery
+                                                        ?.toLowerCase() ??
+                                                    ''))
                                             .toList();
-      
+
                                         return SizedBox(
                                           width: mediaquery.width * 0.8,
                                           child: ListView.builder(
@@ -200,8 +202,9 @@ class _EditPaymentState extends State<EditPayment> {
                                                             datum.headName;
                                                         paidtocontroller2.text =
                                                             datum.headName;
-                                                        fromcode = datum.headCode;
-      
+                                                        fromcode =
+                                                            datum.headCode;
+
                                                         Navigator.pop(context);
                                                         setState(() {
                                                           _focusNode.unfocus();
@@ -232,8 +235,8 @@ class _EditPaymentState extends State<EditPayment> {
                                           child: SizedBox(
                                             height: mediaquery.height * 0.6,
                                             width: mediaquery.width * 0.9,
-                                            child:
-                                                Lottie.asset('assets/error.json'),
+                                            child: Lottie.asset(
+                                                'assets/error.json'),
                                           ),
                                         );
                                       } else {
@@ -318,7 +321,7 @@ class _EditPaymentState extends State<EditPayment> {
                                                 .contains(
                                                     Query?.toLowerCase() ?? ''))
                                             .toList();
-      
+
                                         return SizedBox(
                                           width: mediaquery.width * 0.8,
                                           child: ListView.builder(
@@ -333,13 +336,14 @@ class _EditPaymentState extends State<EditPayment> {
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        paymethodcontroller.text =
+                                                        paymethodcontroller
+                                                                .text =
                                                             datum.headName;
                                                         paymethodcontroller2
                                                                 .text =
                                                             datum.headName;
                                                         tocode = datum.headCode;
-      
+
                                                         Navigator.pop(context);
                                                         setState(() {
                                                           _focusNode.unfocus();
@@ -370,8 +374,8 @@ class _EditPaymentState extends State<EditPayment> {
                                           child: SizedBox(
                                             height: mediaquery.height * 0.6,
                                             width: mediaquery.width * 0.9,
-                                            child:
-                                                Lottie.asset('assets/error.json'),
+                                            child: Lottie.asset(
+                                                'assets/error.json'),
                                           ),
                                         );
                                       } else {
@@ -395,108 +399,96 @@ class _EditPaymentState extends State<EditPayment> {
                     },
                   ),
                 ),
-      SizedBox(
-                    height: mediaquery.height * 0.04,
+                SizedBox(
+                  height: mediaquery.height * 0.04,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Field  cannot be empty';
+                      }
+                      return null;
+                    },
+                    controller: amountcontroller,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: 'Amount',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: mediaquery.width * 0.1),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Field  cannot be empty';
-                        }
-                        return null;
-                      },
-                      controller: amountcontroller,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          labelText: 'Amount',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                    ),
+                ),
+                SizedBox(
+                  height: mediaquery.height * 0.04,
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Field  cannot be empty';
+                      }
+                      return null;
+                    },
+                    controller: memocontroller,
+                    textInputAction: TextInputAction.done,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                        labelText: 'Memo',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
                   ),
-                  SizedBox(
-                    height: mediaquery.height * 0.04,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: mediaquery.width * 0.1),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Field  cannot be empty';
-                        }
-                        return null;
-                      },
-                      controller: memocontroller,
-                      textInputAction: TextInputAction.done,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                          labelText: 'Memo',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                    ),
-                  ),
-                  SizedBox(
-                    height: mediaquery.height * 0.04,
-                  ),
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        height: mediaquery.height*0.05,
-                        width: mediaquery.width*0.3,
-                        child: ElevatedButton(
+                ),
+                SizedBox(
+                  height: mediaquery.height * 0.04,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      height: mediaquery.height * 0.05,
+                      width: mediaquery.width * 0.3,
+                      child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
-                                ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
                           onPressed: () {
-                          editpayment();
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PaymentReport()));
-                          
-                        }, child: const Text('Edit')),
-                      ),
-                      SizedBox(
-                         height: mediaquery.height*0.05,
-                        width: mediaquery.width*0.3,
-                        child: ElevatedButton(
+                            Navigator.pop(context);
+                            editpayment();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PaymentReport(),
+                                ));
+                          },
+                          child: const Text('Edit')),
+                    ),
+                    SizedBox(
+                      height: mediaquery.height * 0.05,
+                      width: mediaquery.width * 0.3,
+                      child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
-                                ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
                           onPressed: () {
-                          showdialog();
-                          print(widget.paynum.toString());
-                          print(fid);
-                        
-                          
-                        }, child: const Text('Delete')),
-                      ),
-                    ],
-                  )
-      
-      
+                            showdialog();
+                          },
+                          child: const Text('Delete')),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
     );
-
-
-
-
-
-
-
-
-
-
-
-    
   }
 
-
-void editpayment() async {
+  void editpayment() async {
     const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
 
     final data = {
@@ -507,7 +499,7 @@ void editpayment() async {
       'paydate': datecontroller.text,
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
-      'paynumber':widget.paynum.toString(),
+      'paynumber': widget.paynum.toString(),
     };
 
     final response = await http.post(Uri.parse(url), body: data);
@@ -515,8 +507,10 @@ void editpayment() async {
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       print(result);
+      
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Payment Edit Succesfull')));
+           
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
@@ -525,9 +519,7 @@ void editpayment() async {
   }
 
   void deletePayment() async {
-
-const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
-
+    const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
 
     var response = await http.post(Uri.parse(url), body: {
       'action': 'DELETE',
@@ -536,6 +528,7 @@ const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
     });
     var jsonResponse = jsonDecode(response.body);
     var responseDesc = jsonResponse['response_desc'];
+    
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -566,12 +559,13 @@ const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
           actions: [
             MaterialButton(
               onPressed: () {
-                
+                Navigator.pop(context);
+                Navigator.pop(context);
                 deletePayment();
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HomePage()));
+                        builder: (context) => const PaymentReport()));
               },
               child: const Text('Yes'),
             ),
@@ -586,9 +580,4 @@ const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
       },
     );
   }
-
-
-
-
-
 }
