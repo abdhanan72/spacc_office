@@ -536,12 +536,6 @@ class _PaymentState extends State<Payment> {
                   padding: EdgeInsets.symmetric(
                       horizontal: mediaquery.size.width * 0.1),
                   child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Field  cannot be empty';
-                      }
-                      return null;
-                    },
                     controller: memo,
                     textInputAction: TextInputAction.done,
                     maxLines: 3,
