@@ -5,37 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:http/http.dart' as http;
-import 'package:spacc_office/payreport/payreport.dart';
 import 'package:spacc_office/License/urls.dart';
 import '../Payment/getheads.dart';
 
-class EditPayment extends StatefulWidget {
-  final int paynum;
+class EditReceipt extends StatefulWidget {
+  final int recnumber;
   final String paidto;
   final String paymentMethod;
   final String amount;
   final String memo;
-  final String paydate;
+  final String recdate;
   final String fromcode;
   final String tocode;
-  const EditPayment(
+  const EditReceipt(
       {super.key,
-      required this.paynum,
+      required this.recnumber,
       required this.paidto,
       required this.paymentMethod,
       required this.amount,
       required this.memo,
-      required this.paydate,
+      required this.recdate,
       required this.fromcode,
       required this.tocode});
 
   @override
-  State<EditPayment> createState() => _EditPaymentState();
+  State<EditReceipt> createState() => _EditReceiptState();
 }
 
-class _EditPaymentState extends State<EditPayment> {
+class _EditReceiptState extends State<EditReceipt> {
   TextEditingController paidtocontroller = TextEditingController();
   TextEditingController paidtocontroller2 = TextEditingController();
   TextEditingController paymethodcontroller = TextEditingController();
@@ -60,7 +60,7 @@ class _EditPaymentState extends State<EditPayment> {
   final FocusNode _focusNode = FocusNode();
   @override
   void initState() {
-    String pdt = widget.paydate;
+    String pdt = widget.recdate;
 
     DateTime dateTime = DateTime.parse(pdt);
     String formattedshow = DateFormat('dd-MMM-yyyy').format(dateTime);
@@ -84,7 +84,7 @@ class _EditPaymentState extends State<EditPayment> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('EditPayment'),
+        title: const Text('Edit Receipt'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -127,7 +127,7 @@ class _EditPaymentState extends State<EditPayment> {
                       EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
                   child: TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Paid to',
+                        labelText: 'Received From',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                     readOnly: true,
@@ -272,7 +272,7 @@ class _EditPaymentState extends State<EditPayment> {
                       EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
                   child: TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Paid from',
+                        labelText: 'Received To',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                     readOnly: true,
@@ -431,12 +431,6 @@ class _EditPaymentState extends State<EditPayment> {
                   padding:
                       EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
                   child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Field  cannot be empty';
-                      }
-                      return null;
-                    },
                     controller: memocontroller,
                     textInputAction: TextInputAction.done,
                     maxLines: 3,
@@ -461,11 +455,11 @@ class _EditPaymentState extends State<EditPayment> {
                                   borderRadius: BorderRadius.circular(20))),
                           onPressed: () {
                             Navigator.pop(context);
-                            editpayment();
+                            editReceipt();
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const PaymentReport(),
+                                  builder: (context) => const ReceiptReport(),
                                 ));
                           },
                           child: const Text('Save')),
@@ -492,7 +486,7 @@ class _EditPaymentState extends State<EditPayment> {
     );
   }
 
-  void editpayment() async {
+  void editReceipt() async {
     
 
     final data = {
@@ -500,37 +494,40 @@ class _EditPaymentState extends State<EditPayment> {
       'fid': fid,
       'accode': fromcode,
       'paymethod': tocode,
-      'paydate': widget.paydate,
+      'recdate': widget.recdate,
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
-      'paynumber': widget.paynum.toString(),
+      'recnumber': widget.recnumber.toString(),
     };
 
-    final response = await http.post(Uri.parse(paymenturl), body: data);
+    final response = await http.post(Uri.parse(receipturl), body: data);
     var result = jsonDecode(response.body);
 
-    if (mounted) {
+    
+       if (mounted) {
       if (result['response_code']==27) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment Edit Succesfull')));
+          const SnackBar(content: Text('Receipt Edit Succesfull')));
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
-              'Could not edit payment')));
+              'Could not edit Receipt')));
     }
       
     }
+      
+    
   }
 
-  void deletePayment() async {
+  void deleteReceipt() async {
     
 
-    var response = await http.post(Uri.parse(paymenturl), body: {
+    var response = await http.post(Uri.parse(receipturl), body: {
       'action': 'DELETE',
       'fid': fid,
-      'paynumber': widget.paynum.toString()
+      'recnumber': widget.recnumber.toString()
     });
 
     var jsonResponse = jsonDecode(response.body);
@@ -569,11 +566,11 @@ class _EditPaymentState extends State<EditPayment> {
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.pop(context);
-                deletePayment();
+                deleteReceipt();
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PaymentReport()));
+                        builder: (context) => const ReceiptReport()));
               },
               child: const Text('Yes'),
             ),

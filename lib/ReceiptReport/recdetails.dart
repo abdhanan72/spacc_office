@@ -4,33 +4,30 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/payreport/editpayment.dart';
 import 'package:spacc_office/License/urls.dart';
+import 'package:spacc_office/ReceiptReport/editreceipt.dart';
 
-class PaymentDetails extends StatefulWidget {
-  final int paynum;
+class ReceiptDetails extends StatefulWidget {
+  final int recnumber;
   final String fid;
-  const PaymentDetails({super.key, required this.paynum, required this.fid});
+  const ReceiptDetails({super.key, required this.recnumber, required this.fid});
 
   @override
-  State<PaymentDetails> createState() => _PaymentDetailsState();
+  State<ReceiptDetails> createState() => _ReceiptDetailsState();
 }
 
-class _PaymentDetailsState extends State<PaymentDetails> {
-  
-
-  
-
-  Future<List<dynamic>> viewpayment() async {
-    var response = await http.post(Uri.parse(paymenturl), body: {
+class _ReceiptDetailsState extends State<ReceiptDetails> {
+  Future<List<dynamic>> viewReceipt() async {
+    var response = await http.post(Uri.parse(receipturl), body: {
       'action': 'VIEW',
       'fid': widget.fid,
-      'paynumber': widget.paynum.toString()
+      'recnumber': widget.recnumber.toString()
     });
     var data = jsonDecode(response.body);
     return data['data'];
   }
-String? date;
+
+  String? date;
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? fid = prefs.getString('firm_id');
@@ -40,7 +37,6 @@ String? date;
   String? fromcode;
   String? tocode;
 
-  
   @override
   void initState() {
     getFirmId().then((value) {
@@ -50,6 +46,7 @@ String? date;
     });
     super.initState();
   }
+
   String? fid;
 
   @override
@@ -57,12 +54,12 @@ String? date;
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment Details'),
+        title: const Text('Receipt Details'),
       ),
       body: Column(
         children: [
           FutureBuilder(
-            future: viewpayment(),
+            future: viewReceipt(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 var item = snapshot.data[0];
@@ -121,7 +118,7 @@ String? date;
                                 readOnly: true,
                                 controller: paidtocontroller,
                                 decoration: InputDecoration(
-                                    labelText: 'Paid to',
+                                    labelText: 'Received from',
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(20))),
@@ -138,7 +135,7 @@ String? date;
                                 readOnly: true,
                                 controller: paymethodcontroller,
                                 decoration: InputDecoration(
-                                    labelText: 'Paid From',
+                                    labelText: 'Received to',
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(20))),
@@ -194,17 +191,16 @@ String? date;
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => EditPayment(
-                                            paynum: widget.paynum,
-                                            paidto: paidtocontroller.text,
-                                            paymentMethod:
-                                                paymethodcontroller.text,
-                                            amount: amountcontroller.text,
-                                            memo: memocontroller.text,
-                                            paydate: formattedfor,
-                                            fromcode: fromcode!,
-                                            tocode: tocode!,
-                                          ),
+                                          builder: (context) => EditReceipt(
+                                              recnumber: widget.recnumber,
+                                              paidto: paidtocontroller.text,
+                                              paymentMethod:
+                                                  paymethodcontroller.text,
+                                              amount: amountcontroller.text,
+                                              memo: memocontroller.text,
+                                              recdate: formattedfor,
+                                              fromcode: fromcode!,
+                                              tocode: tocode!),
                                         ));
                                   },
                                   child: const Text('Edit/Delete')),
@@ -225,7 +221,7 @@ String? date;
                         child: Lottie.asset('assets/85023-no-data.json')));
               }
 
-              return const Center(child:  CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             },
           ),
         ],

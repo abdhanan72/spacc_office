@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Order/order.dart';
 import 'package:spacc_office/Receipt/receipt.dart';
+import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
 import 'package:spacc_office/payreport/payreport.dart';
 import '../Login/login.dart';
 import '../Payment/payment.dart';
@@ -157,6 +158,14 @@ class _HomePageState extends State<HomePage> {
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/report.png', text: 'Payment Report')),
+                       GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReceiptReport(),
+                      )),
+                  child: const Menuitem(
+                      imagePath: 'assets/recreport.png', text: 'Receipt Report')),
               GestureDetector(
                   onTap: () {
                     showdialog();

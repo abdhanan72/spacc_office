@@ -382,7 +382,7 @@ class _PaymentState extends State<Payment> {
                       return null;
                     },
                     decoration: InputDecoration(
-                        labelText: 'Payment Method',
+                        labelText: 'Paid From',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
                     readOnly: true,
