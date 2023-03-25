@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/editpayment.dart';
+import 'package:spacc_office/License/urls.dart';
 
 class PaymentDetails extends StatefulWidget {
   final int paynum;
@@ -16,12 +17,12 @@ class PaymentDetails extends StatefulWidget {
 }
 
 class _PaymentDetailsState extends State<PaymentDetails> {
-  final String url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+  
 
   
 
   Future<List<dynamic>> viewpayment() async {
-    var response = await http.post(Uri.parse(url), body: {
+    var response = await http.post(Uri.parse(paymenturl), body: {
       'action': 'VIEW',
       'fid': widget.fid,
       'paynumber': widget.paynum.toString()

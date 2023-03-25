@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/paydetail.dart';
+import 'package:spacc_office/License/urls.dart';
 
 class PaymentReport extends StatefulWidget {
   const PaymentReport({super.key});
@@ -13,10 +14,10 @@ class PaymentReport extends StatefulWidget {
 }
 
 class _PaymentReportState extends State<PaymentReport> {
-  final String url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+  
 
   Future<List<dynamic>> _fetchData() async {
-    var response = await http.post(Uri.parse(url), body: {
+    var response = await http.post(Uri.parse(paymenturl), body: {
       'action': 'LIST',
       'date1': apidate1,
       'date2': apidate2,
@@ -126,7 +127,7 @@ class _PaymentReportState extends State<PaymentReport> {
             ),
           ),
           SizedBox(
-            height: mediaquery.height * 0.04,
+            height: mediaquery.height * 0.02,
           ),
           ElevatedButton(
               onPressed: () {

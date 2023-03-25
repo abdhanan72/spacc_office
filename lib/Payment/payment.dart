@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:spacc_office/Payment/getheads.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
+import 'package:spacc_office/License/urls.dart';
 
 class Payment extends StatefulWidget {
   const Payment({super.key});
@@ -109,7 +109,7 @@ class _PaymentState extends State<Payment> {
   }
 
    void _postPayment() async {
-    const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+    
 
     final data = {
       'action': 'CREATE',
@@ -121,7 +121,7 @@ class _PaymentState extends State<Payment> {
       'amount': amount.text
     };
 
-    final response = await http.post(Uri.parse(url), body: data);
+    final response = await http.post(Uri.parse(paymenturl), body: data);
     final result = jsonDecode(response.body);
     
 

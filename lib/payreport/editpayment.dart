@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/models/itemodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:spacc_office/payreport/payreport.dart';
+import 'package:spacc_office/License/urls.dart';
 import '../Payment/getheads.dart';
 
 class EditPayment extends StatefulWidget {
@@ -492,7 +493,7 @@ class _EditPaymentState extends State<EditPayment> {
   }
 
   void editpayment() async {
-    const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+    
 
     final data = {
       'action': 'EDIT',
@@ -505,7 +506,7 @@ class _EditPaymentState extends State<EditPayment> {
       'paynumber': widget.paynum.toString(),
     };
 
-    final response = await http.post(Uri.parse(url), body: data);
+    final response = await http.post(Uri.parse(paymenturl), body: data);
     var result = jsonDecode(response.body);
 
     if (mounted) {
@@ -524,9 +525,9 @@ class _EditPaymentState extends State<EditPayment> {
   }
 
   void deletePayment() async {
-    const url = 'http://cloud.spaccsoftware.com/hanan_api/payment/';
+    
 
-    var response = await http.post(Uri.parse(url), body: {
+    var response = await http.post(Uri.parse(paymenturl), body: {
       'action': 'DELETE',
       'fid': fid,
       'paynumber': widget.paynum.toString()
