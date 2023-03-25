@@ -23,6 +23,7 @@ class _ReceiptEntryState extends State<ReceiptEntry> {
   late String secondbalance;
   final TextEditingController date = TextEditingController();
   String? firmId;
+  String? username;
   late String formattedDate;
   final TextEditingController from2controller = TextEditingController();
   final TextEditingController from3controller = TextEditingController();
@@ -54,7 +55,18 @@ class _ReceiptEntryState extends State<ReceiptEntry> {
         firmId = value!;
       });
     });
+    getusername().then((value) {
+      setState(() {
+        username=value!;
+      });
+    });
   }
+   Future<String?> getusername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('user_name');
+    return username;
+  }
+ 
 
   Future<String?> getFirmId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -121,7 +133,8 @@ class _ReceiptEntryState extends State<ReceiptEntry> {
       'paymethod': tocode,
       'recdate': apidate1,
       'memo': memo.text,
-      'amount': amount.text
+      'amount': amount.text,
+      'username':username
     };
 
     final response = await http.post(Uri.parse(receipturl), body: data);

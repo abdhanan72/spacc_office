@@ -22,6 +22,7 @@ class _PaymentState extends State<Payment> {
   late String balance;
   final TextEditingController date = TextEditingController();
   String? firmId;
+ 
   late String formattedDate;
   final TextEditingController from2controller = TextEditingController();
   final TextEditingController from3controller = TextEditingController();
@@ -52,6 +53,11 @@ class _PaymentState extends State<Payment> {
         firmId = value!;
       });
     });
+    getusername().then((value) {
+      setState(() {
+        username=value!;
+      });
+    });
   }
 
   Future<String?> getFirmId() async {
@@ -59,6 +65,13 @@ class _PaymentState extends State<Payment> {
     String? firmId = prefs.getString('firm_id');
     return firmId;
   }
+  Future<String?> getusername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('user_name');
+    return username;
+  }
+ String? username;
+
 
   void showdialog() {
     showDialog(
@@ -118,7 +131,8 @@ class _PaymentState extends State<Payment> {
       'paymethod': tocode,
       'paydate': apidate1,
       'memo': memo.text,
-      'amount': amount.text
+      'amount': amount.text,
+      'username':username
     };
 
     final response = await http.post(Uri.parse(paymenturl), body: data);

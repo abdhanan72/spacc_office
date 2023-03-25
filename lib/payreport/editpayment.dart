@@ -51,6 +51,17 @@ class _EditPaymentState extends State<EditPayment> {
 
   String? fid;
 
+Future<String?> getusername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('user_name');
+    return username;
+  }
+ String? username;
+
+
+
+
+
   String? pdt;
   String? query;
   String? searchQuery;
@@ -74,6 +85,11 @@ class _EditPaymentState extends State<EditPayment> {
     getFirmId().then((value) {
       setState(() {
         fid = value!;
+      });
+    });
+    getusername().then((value) {
+      setState(() {
+        username=value!;
       });
     });
     super.initState();
@@ -504,6 +520,7 @@ class _EditPaymentState extends State<EditPayment> {
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
       'paynumber': widget.paynum.toString(),
+      'username':username
     };
 
     final response = await http.post(Uri.parse(paymenturl), body: data);

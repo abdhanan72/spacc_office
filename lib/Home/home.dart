@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 
-
+String? username;
  String? fullname;
 
 class _HomePageState extends State<HomePage> {

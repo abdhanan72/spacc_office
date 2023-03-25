@@ -34,6 +34,7 @@ class EditReceipt extends StatefulWidget {
   @override
   State<EditReceipt> createState() => _EditReceiptState();
 }
+ String? username;
 
 class _EditReceiptState extends State<EditReceipt> {
   TextEditingController paidtocontroller = TextEditingController();
@@ -50,6 +51,14 @@ class _EditReceiptState extends State<EditReceipt> {
   }
 
   String? fid;
+
+
+   Future<String?> getusername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString('user_name');
+    return username;
+  }
+
 
   String? pdt;
   String? query;
@@ -74,6 +83,11 @@ class _EditReceiptState extends State<EditReceipt> {
     getFirmId().then((value) {
       setState(() {
         fid = value!;
+      });
+    });
+    getusername().then((value)  {
+      setState(() {
+        username=value!;
       });
     });
     super.initState();
@@ -498,6 +512,7 @@ class _EditReceiptState extends State<EditReceipt> {
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
       'recnumber': widget.recnumber.toString(),
+      'username':username
     };
 
     final response = await http.post(Uri.parse(receipturl), body: data);
