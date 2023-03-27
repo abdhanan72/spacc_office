@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Payment/getheads.dart';
-import 'package:spacc_office/models/itemodel.dart';
+import 'package:spacc_office/models/headsmodel.dart';
 import 'package:lottie/lottie.dart';
 import 'package:intl/intl.dart';
 import 'package:spacc_office/License/urls.dart';

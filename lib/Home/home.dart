@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spacc_office/Order/order.dart';
 import 'package:spacc_office/Receipt/receipt.dart';
 import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
 import 'package:spacc_office/payreport/payreport.dart';
 import '../Login/login.dart';
+import '../Order/selectcusomer.dart';
 import '../Payment/payment.dart';
 
 class HomePage extends StatefulWidget {
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Order(),
+                        builder: (context) => const CustomerSelect(),
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
