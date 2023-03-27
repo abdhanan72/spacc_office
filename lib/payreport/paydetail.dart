@@ -59,7 +59,7 @@ String? date;
       appBar: AppBar(
         title: const Text('Payment Details'),
       ),
-      body: Column(
+      body: Column(mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FutureBuilder(
             future: viewpayment(),
@@ -225,7 +225,7 @@ String? date;
                         child: Lottie.asset('assets/85023-no-data.json')));
               }
 
-              return const Center(child:  CircularProgressIndicator());
+              return const Center(child:  LinearProgressIndicator());
             },
           ),
         ],

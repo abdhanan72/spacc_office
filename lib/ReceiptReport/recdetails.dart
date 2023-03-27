@@ -56,7 +56,7 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
       appBar: AppBar(
         title: const Text('Receipt Details'),
       ),
-      body: Column(
+      body: Column(mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FutureBuilder(
             future: viewReceipt(),
@@ -221,7 +221,7 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
                         child: Lottie.asset('assets/85023-no-data.json')));
               }
 
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: LinearProgressIndicator());
             },
           ),
         ],

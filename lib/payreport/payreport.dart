@@ -244,11 +244,13 @@ class _PaymentReportState extends State<PaymentReport> {
                                       Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            
-                                            item['acname'],
-                                            style: const TextStyle(fontWeight: FontWeight.bold),
-                                            ),
+                                          Expanded(
+                                            child: Text(
+                                              
+                                              item['acname'],
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                          ),
                                           Row(
                                             children: [
                                                Icon(
@@ -274,7 +276,7 @@ class _PaymentReportState extends State<PaymentReport> {
                 } else if (snapshot.hasError) {
                   return const Text("Not a valid date ");
                 }
-                return const CircularProgressIndicator();
+                return const LinearProgressIndicator();
               },
             ),
         ],
