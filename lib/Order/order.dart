@@ -53,32 +53,16 @@ class _OrderEntryState extends State<OrderEntry> {
 
   List<Map<String, String>> dataList = [];
   double getSumOfAmounts() {
-    return dataList.fold(0, (total, item) => total + double.parse(item['amount']!));
+    return dataList.fold(
+        0, (total, item) => total + double.parse(item['amount']!));
   }
+
   Map<String, dynamic> data = {};
 
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xff000080),
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return box();
-              });
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const <Widget>[
-            Icon(Icons.add),
-            SizedBox(height: 4.0),
-            Text("item"),
-          ],
-        ),
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,8 +112,6 @@ class _OrderEntryState extends State<OrderEntry> {
                 itemCount: dataList.length,
                 itemBuilder: (context, index) {
                   final item = dataList[index];
-                 double sumed = dataList.fold(0, (total, item) => total + double.parse(item['amount']!));
-
                   return Column(
                     children: [
                       const Divider(
@@ -168,19 +150,25 @@ class _OrderEntryState extends State<OrderEntry> {
               ),
             ),
             SizedBox(
-              height: mediaquery.height * 0.1,
+              height: mediaquery.height * 0.15,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  
                   Text(
-                    
-                    "Total Amount:${getSumOfAmounts().toString()}",style: TextStyle(
-                      fontSize: mediaquery.width*0.06
-                    ),),
-            
+                    "Total Amount:${getSumOfAmounts().toString()}",
+                    style: TextStyle(fontSize: mediaquery.width * 0.06),
+                  ),
+                  CupertinoButton.filled(
+                    child: const Text('ADD ITEMS'),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return box();
+                          });
+                    },
+                  )
                 ],
-                
               ),
             )
           ],
