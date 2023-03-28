@@ -150,7 +150,7 @@ class _OrderEntryState extends State<OrderEntry> {
               ),
             ),
             SizedBox(
-              height: mediaquery.height * 0.15,
+              height: mediaquery.height * 0.2,
               width: mediaquery.width,
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.amber),
@@ -169,6 +169,13 @@ class _OrderEntryState extends State<OrderEntry> {
                             builder: (BuildContext context) {
                               return box();
                             });
+                      },
+                    ),
+                    SizedBox(height: mediaquery.height*0.01,),
+                    CupertinoButton.filled(
+                      child: const Text('PLACE ORDER'),
+                      onPressed: () {
+                    
                       },
                     )
                   ],
