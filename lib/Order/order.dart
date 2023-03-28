@@ -151,24 +151,28 @@ class _OrderEntryState extends State<OrderEntry> {
             ),
             SizedBox(
               height: mediaquery.height * 0.15,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Total Amount:${getSumOfAmounts().toString()}",
-                    style: TextStyle(fontSize: mediaquery.width * 0.06),
-                  ),
-                  CupertinoButton.filled(
-                    child: const Text('ADD ITEMS'),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return box();
-                          });
-                    },
-                  )
-                ],
+              width: mediaquery.width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Colors.amber),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Total Amount:${getSumOfAmounts().toString()}",
+                      style: TextStyle(fontSize: mediaquery.width * 0.06),
+                    ),
+                    CupertinoButton.filled(
+                      child: const Text('ADD ITEMS'),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return box();
+                            });
+                      },
+                    )
+                  ],
+                ),
               ),
             )
           ],
