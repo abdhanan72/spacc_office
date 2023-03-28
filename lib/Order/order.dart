@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -24,6 +26,9 @@ TextEditingController itemcontroller2 = TextEditingController();
 TextEditingController ratecontroller = TextEditingController();
 TextEditingController qtycontroller = TextEditingController();
 String? firmId;
+late double qtyint;
+late double rateint;
+late double amount;
 String? searchQuery;
 final FocusNode _focusNode = FocusNode();
 late String itemcode;
@@ -32,7 +37,7 @@ class _OrderEntryState extends State<OrderEntry> {
   @override
   void initState() {
     super.initState();
-
+    amount = 1;
     getFirmId().then((value) {
       setState(() {
         firmId = value!;
@@ -53,7 +58,7 @@ class _OrderEntryState extends State<OrderEntry> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor:const Color(0xff000080),
+        backgroundColor: const Color(0xff000080),
         onPressed: () {
           showDialog(
               context: context,
@@ -89,25 +94,25 @@ class _OrderEntryState extends State<OrderEntry> {
               height: mediaquery.height * 0.08,
               child: Container(
                 color: Colors.blueGrey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
-                    Text(
-                      'Item',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Qty',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Rate',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: mediaquery.width * 0.04,
+                      right: mediaquery.width * 0.04),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        'Item',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Amount',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -118,37 +123,53 @@ class _OrderEntryState extends State<OrderEntry> {
               child: ListView.builder(
                 itemCount: dataList.length,
                 itemBuilder: (context, index) {
+                  final item = dataList[index];
+
                   return Column(
                     children: [
                       const Divider(
                         thickness: 2,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: mediaquery.width * 0.02),
+                        padding: EdgeInsets.only(
+                            left: mediaquery.width * 0.02,
+                            right: mediaquery.width * 0.01),
                         child: Row(
                           children: [
                             Expanded(
                                 child: Text(
-                              dataList[index]["itemname"]!,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
+                              item['itemname']!,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             )),
                             SizedBox(
                               width: mediaquery.width * 0.1,
                             ),
-                            Text(dataList[index]["qty"]!),
+                            Text("(${item["qty"]}X${item["rate"]})"),
                             SizedBox(
                               width: mediaquery.width * 0.2,
                             ),
-                            Expanded(child: Text(dataList[index]["rate"]!)),
+                            Text(
+                              item["amount"]!,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   );
                 },
               ),
             ),
+            Container(
+              height: mediaquery.height * 0.1,
+              child: Column(
+                children: [
+                 
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -340,13 +361,18 @@ class _OrderEntryState extends State<OrderEntry> {
             CupertinoButton.filled(
               child: const Text('Add to cart'),
               onPressed: () {
+                setState(() {
+                  qtyint = double.parse(qtycontroller.text);
+                  rateint = double.parse(ratecontroller.text);
+                  amount = qtyint * rateint;
+                });
                 dataList.add({
                   "itemname": itemcontroller.text,
                   "qty": qtycontroller.text,
                   "rate": ratecontroller.text,
                   "itemcode": itemcode,
+                  "amount": amount.toString(),
                 });
-
                 setState(() {
                   itemcode = '';
                   ratecontroller.clear();
@@ -357,7 +383,7 @@ class _OrderEntryState extends State<OrderEntry> {
                   Navigator.pop(context);
                 });
               },
-            )
+            ),
           ],
         ),
       ),
