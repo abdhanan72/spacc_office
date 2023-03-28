@@ -52,6 +52,10 @@ class _OrderEntryState extends State<OrderEntry> {
   }
 
   List<Map<String, String>> dataList = [];
+  double getSumOfAmounts() {
+    return dataList.fold(0, (total, item) => total + double.parse(item['amount']!));
+  }
+  Map<String, dynamic> data = {};
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +128,7 @@ class _OrderEntryState extends State<OrderEntry> {
                 itemCount: dataList.length,
                 itemBuilder: (context, index) {
                   final item = dataList[index];
+                 double sumed = dataList.fold(0, (total, item) => total + double.parse(item['amount']!));
 
                   return Column(
                     children: [
@@ -162,12 +167,20 @@ class _OrderEntryState extends State<OrderEntry> {
                 },
               ),
             ),
-            Container(
+            SizedBox(
               height: mediaquery.height * 0.1,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 
+                  
+                  Text(
+                    
+                    "Total Amount:${getSumOfAmounts().toString()}",style: TextStyle(
+                      fontSize: mediaquery.width*0.06
+                    ),),
+            
                 ],
+                
               ),
             )
           ],
@@ -373,6 +386,7 @@ class _OrderEntryState extends State<OrderEntry> {
                   "itemcode": itemcode,
                   "amount": amount.toString(),
                 });
+                print(dataList);
                 setState(() {
                   itemcode = '';
                   ratecontroller.clear();
