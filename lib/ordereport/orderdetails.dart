@@ -102,10 +102,11 @@ class _OrderDetailsState extends State<OrderDetails> {
             SizedBox(
               height: mediaquery.height * 0.01,
             ),
+            orderData.isNotEmpty?
             Text(
               'Customer Name: ${orderData['cust_name']}',
-            ),
-            Expanded(
+            ):const LinearProgressIndicator(),
+            itemdata.isNotEmpty?Expanded(
               child: ListView.builder(
                 itemCount: itemdata.length,
                 itemBuilder: (context, index) {
@@ -117,7 +118,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                   );
                 },
               ),
-            )
+            ):const LinearProgressIndicator()
+            
           ],
         ),
       ),
