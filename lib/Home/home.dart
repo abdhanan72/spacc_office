@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Receipt/receipt.dart';
 import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
+import 'package:spacc_office/ordereport/orderreport.dart';
 import 'package:spacc_office/payreport/payreport.dart';
 import '../Login/login.dart';
 import '../Order/selectcusomer.dart';
@@ -173,6 +174,21 @@ class _HomePageState extends State<HomePage> {
                   child: const Menuitem(
                       imagePath: 'assets/logout.png', text: 'Logout')),
             ],
+          ),
+            SizedBox(
+            height: mediaquery.size.height * 0.05,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children:  [
+            GestureDetector(
+               onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OrderReport(),
+                      )),
+              child:const Menuitem(imagePath: 'assets/orderreport.png', text:'Order Report'))
+          ],
+
           )
         ],
       ),

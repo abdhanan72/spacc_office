@@ -193,14 +193,10 @@ class _OrderEntryState extends State<OrderEntry> {
                       child: const Text('PLACE ORDER'),
                       onPressed: () {
                         if (dataList.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('No items Found')));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No items found')));
+                          
                         } else {
-                          sendPostRequest();
-                          setState(() {
-                            dataList.clear();
-                            itemData.clear();
-                          });
+                          showdialog();
                         }
                       },
                     )
@@ -415,7 +411,6 @@ class _OrderEntryState extends State<OrderEntry> {
                   "item_code": itemcode,
                   "qty": qtycontroller.text,
                   "rate": ratecontroller.text,
-                  
                 });
                 print(itemData);
                 print(dataList);
@@ -474,5 +469,47 @@ class _OrderEntryState extends State<OrderEntry> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result["response_desc"])));
     }
+  }
+
+  void showdialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Confirm?',
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  fontWeight: FontWeight.bold)),
+          content: Column(
+            children: [
+              Lottie.asset('assets/105198-attention.json',
+                  height: MediaQuery.of(context).size.height * 0.1),
+              const Text(
+                'Are you sure you want to place the order?',
+              )
+            ],
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                 sendPostRequest();
+                  setState(() {
+                    dataList.clear();
+                    itemData.clear();
+                  });
+                  Navigator.pop(context);
+              },
+              child: const Text('Yes'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            )
+          ],
+        );
+      },
+    );
   }
 }

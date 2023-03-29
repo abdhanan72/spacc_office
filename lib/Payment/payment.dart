@@ -376,7 +376,7 @@ class _PaymentState extends State<Payment> {
                   height: mediaquery.size.height * 0.01,
                 ),
                 Text(
-                  "Current Balance:Rs$balance.00",
+                  "Current Balance:Rs$balance",
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
