@@ -165,7 +165,7 @@ class _OrderReportState extends State<OrderReport> {
                                       custname: item['cust_name'],
                                       custnumber: item['cust_number'],
                                       totalamount: item['totalamount'],
-                                      ordnumber: item['ordnumber']),
+                                      ordnumber: item['ordnumber'], fid:fid!,),
                                 ));
                           },
                           child: Padding(

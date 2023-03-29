@@ -1,22 +1,21 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../License/urls.dart';
+import 'package:spacc_office/License/urls.dart';
 
 class OrderDetails extends StatefulWidget {
   final int ordnumber;
   final String custnumber;
   final String custname;
   final String totalamount;
+  final String fid;
   const OrderDetails(
       {super.key,
       required this.ordnumber,
       required this.custnumber,
       required this.custname,
-      required this.totalamount});
+      required this.totalamount,
+      required this.fid});
 
   @override
   State<OrderDetails> createState() => _OrderDetailsState();
@@ -26,33 +25,30 @@ class _OrderDetailsState extends State<OrderDetails> {
   String? custnumber;
   String? custname;
   String? totalamount;
-  Future<List<dynamic>> datacall() async { 
-  var response = await http.post(Uri.parse(orderurl), body: {
-    'action': 'VIEW',
-    'fid': firmId,
-    'ordnumber': widget.ordnumber,
-  });
-  var data = jsonDecode(response.body);
-  List<dynamic> itemData = data['data']['itemdata'];
-  return itemData;
-}
+  Map<String, dynamic> orderData = {};
+  List<dynamic> itemdata = [];
+  Future<void> fetchOrderDetails() async {
+    final body = {
+      'action': 'VIEW',
+      'ordnumber': widget.ordnumber.toString(),
+      'fid': widget.fid
+    };
+    final response = await http.post(Uri.parse(orderurl), body: body);
 
-
-  Future<String?> getFirmId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? firmId = prefs.getString('firm_id');
-    return firmId;
+    if (response.statusCode == 200) {
+      setState(() {
+        orderData = jsonDecode(response.body)['data'];
+        itemdata = orderData['itemdata'];
+      });
+    } else {
+      throw Exception('Failed to fetch order');
+    }
   }
 
   String? firmId;
-
   @override
   void initState() {
-    getFirmId().then((value) {
-      setState(() {
-        firmId = value!;
-      });
-    });
+    fetchOrderDetails();
     super.initState();
   }
 
@@ -106,28 +102,21 @@ class _OrderDetailsState extends State<OrderDetails> {
             SizedBox(
               height: mediaquery.height * 0.01,
             ),
-            FutureBuilder<List<dynamic>>(
-              future: datacall(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                
-                if (snapshot.hasData) {
-      List<dynamic> itemData = snapshot.data!;
-      return ListView.builder(
-        itemCount: itemData.length,
-        itemBuilder: (context, index) {
-          final item = itemData[index];
-          return ListTile(
-            title: Text(item['item_code']),
-            subtitle: Text('Qty: ${item['qty']}, Rate: ${item['rate']}'),
-          );
-        },
-      );
-    }else if(snapshot.hasError){
-                  const Center(child: CircularProgressIndicator());
-                }
-
-                return const LinearProgressIndicator();
-              },
+            Text(
+              'Customer Name: ${orderData['cust_name']}',
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: itemdata.length,
+                itemBuilder: (context, index) {
+                  final item = itemdata[index];
+                  return ListTile(
+                    title:Text('itemcode:${item['item_code']}') ,
+                    subtitle:
+                        Text('Qty: ${item['qty']} - Rate: ${item['rate']}'),
+                  );
+                },
+              ),
             )
           ],
         ),
