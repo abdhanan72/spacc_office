@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Order/order.dart';
@@ -16,17 +17,20 @@ class CustomerSelect extends StatefulWidget {
 
 class _CustomerSelectState extends State<CustomerSelect> {
   final TextEditingController customer2controller = TextEditingController();
+  final TextEditingController date = TextEditingController();
   late String customercode;
   String? searchQuery;
   final FocusNode _focusNode = FocusNode();
   String? firmId;
   String? balance;
+  String? orderdate;
   final TextEditingController customercontroller = TextEditingController();
-final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    balance='-------';
+    orderdate = '';
+    balance = '-------';
     customercode = '';
     getFirmId().then((value) {
       setState(() {
@@ -121,11 +125,11 @@ final _formKey = GlobalKey<FormState>();
                                         var filteredData = data!
                                             .where((item) => item.headName
                                                 .toLowerCase()
-                                                .contains(
-                                                    searchQuery?.toLowerCase() ??
-                                                        ''))
+                                                .contains(searchQuery
+                                                        ?.toLowerCase() ??
+                                                    ''))
                                             .toList();
-      
+
                                         return SizedBox(
                                           width: mediaquery.width * 0.8,
                                           child: ListView.builder(
@@ -140,13 +144,17 @@ final _formKey = GlobalKey<FormState>();
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        customer2controller.text =
+                                                        customer2controller
+                                                                .text =
                                                             datum.headName;
-                                                        customercontroller.text =
+                                                        customercontroller
+                                                                .text =
                                                             datum.headName;
-                                                        customercode = datum.headCode;
-                                                        balance=datum.currentBalance;
-      
+                                                        customercode =
+                                                            datum.headCode;
+                                                        balance = datum
+                                                            .currentBalance;
+
                                                         Navigator.pop(context);
                                                         setState(() {
                                                           _focusNode.unfocus();
@@ -177,8 +185,8 @@ final _formKey = GlobalKey<FormState>();
                                           child: SizedBox(
                                             height: mediaquery.height * 0.6,
                                             width: mediaquery.width * 0.9,
-                                            child:
-                                                Lottie.asset('assets/error.json'),
+                                            child: Lottie.asset(
+                                                'assets/error.json'),
                                           ),
                                         );
                                       } else {
@@ -205,22 +213,68 @@ final _formKey = GlobalKey<FormState>();
                 SizedBox(
                   height: mediaquery.height * 0.02,
                 ),
-                Text("Current balance:${balance!}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),),
+                Text(
+                  "Current balance:${balance!}",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(
                   height: mediaquery.height * 0.02,
                 ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: mediaquery.width * 0.1),
+                  child: TextFormField(
+                    controller: date,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Field 1 cannot be empty';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      prefixIcon: const Icon(Icons.calendar_today_outlined),
+                    ),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickdate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100));
 
+                      if (pickdate != null) {
+                        String formateddate =
+                            DateFormat("dd-MMM-yyyy").format(pickdate);
+
+                        String setdate1 =
+                            DateFormat("yyyy-MM-dd").format(pickdate);
+                        setState(() {
+                          date.text = formateddate.toString();
+                          orderdate = setdate1;
+                        });
+                      } else {}
+                    },
+                  ),
+                ),
                 CupertinoButton.filled(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderEntry(customercode:customercode, customername: customercontroller.text,),
-                          ));
-                        
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderEntry(
+                                orderdate: orderdate!,
+                                customercode: customercode,
+                                customername: customercontroller.text,
+                              ),
+                            ));
                       }
                     },
                     child: const Text('NEXT')),

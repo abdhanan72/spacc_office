@@ -14,8 +14,12 @@ import '../models/itemmodel.dart';
 class OrderEntry extends StatefulWidget {
   final String customername;
   final String customercode;
+  final String orderdate;
   const OrderEntry(
-      {super.key, required this.customercode, required this.customername});
+      {super.key,
+      required this.customercode,
+      required this.customername,
+      required this.orderdate});
 
   @override
   State<OrderEntry> createState() => _OrderEntryState();
@@ -32,11 +36,15 @@ late double amount;
 String? searchQuery;
 final FocusNode _focusNode = FocusNode();
 late String itemcode;
+String? custcode;
+String? orderdate;
 
 class _OrderEntryState extends State<OrderEntry> {
   @override
   void initState() {
     super.initState();
+    orderdate = widget.orderdate;
+    custcode = widget.customercode;
     amount = 1;
     getFirmId().then((value) {
       setState(() {
@@ -52,6 +60,7 @@ class _OrderEntryState extends State<OrderEntry> {
   }
 
   List<Map<String, String>> dataList = [];
+  List<Map<String, String>> itemData = [];
   double getSumOfAmounts() {
     return dataList.fold(
         0, (total, item) => total + double.parse(item['amount']!));
@@ -67,6 +76,9 @@ class _OrderEntryState extends State<OrderEntry> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(
+              height: mediaquery.height * .02,
+            ),
             Text(
               widget.customername,
               style: const TextStyle(
@@ -161,6 +173,9 @@ class _OrderEntryState extends State<OrderEntry> {
                       "Total Amount:${getSumOfAmounts().toString()}",
                       style: TextStyle(fontSize: mediaquery.width * 0.06),
                     ),
+                    SizedBox(
+                      height: mediaquery.height * 0.01,
+                    ),
                     CupertinoButton.filled(
                       child: const Text('ADD ITEMS'),
                       onPressed: () {
@@ -171,11 +186,18 @@ class _OrderEntryState extends State<OrderEntry> {
                             });
                       },
                     ),
-                    SizedBox(height: mediaquery.height*0.01,),
+                    SizedBox(
+                      height: mediaquery.height * 0.01,
+                    ),
                     CupertinoButton.filled(
                       child: const Text('PLACE ORDER'),
                       onPressed: () {
-                    
+                        sendPostRequest();
+                        setState(() {
+                          dataList.clear();
+                          itemData.clear();
+                        });
+                        
                       },
                     )
                   ],
@@ -385,6 +407,12 @@ class _OrderEntryState extends State<OrderEntry> {
                   "itemcode": itemcode,
                   "amount": amount.toString(),
                 });
+                itemData.add({
+                  "qty": qtycontroller.text,
+                  "rate": ratecontroller.text,
+                  "itemcode": itemcode,
+                });
+                print(itemData);
                 print(dataList);
                 setState(() {
                   itemcode = '';
@@ -414,6 +442,32 @@ class _OrderEntryState extends State<OrderEntry> {
       return itemmodel;
     } else {
       throw Exception('Failed to load data');
+    }
+  }
+
+  Future<void> sendPostRequest() async {
+    final response = await http.post(
+      Uri.parse(orderurl),
+      body: {
+        'orddate': orderdate,
+        'action': 'CREATE',
+        'memo': '',
+        'fid': firmId,
+        'amount': getSumOfAmounts().toString(),
+        'custcode': custcode,
+        'itemdata': jsonEncode(itemData),
+      },
+    );
+    final result = jsonDecode(response.body);
+
+    if (result["response_code"] == 27) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Order Placed')));
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(result["response_desc"])));
     }
   }
 }
