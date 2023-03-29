@@ -192,12 +192,16 @@ class _OrderEntryState extends State<OrderEntry> {
                     CupertinoButton.filled(
                       child: const Text('PLACE ORDER'),
                       onPressed: () {
-                        sendPostRequest();
-                        setState(() {
-                          dataList.clear();
-                          itemData.clear();
-                        });
-                        
+                        if (dataList.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No items Found')));
+                        } else {
+                          sendPostRequest();
+                          setState(() {
+                            dataList.clear();
+                            itemData.clear();
+                          });
+                        }
                       },
                     )
                   ],

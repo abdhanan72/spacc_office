@@ -263,6 +263,7 @@ class _CustomerSelectState extends State<CustomerSelect> {
                     },
                   ),
                 ),
+                SizedBox(height: mediaquery.height*0.02,),
                 CupertinoButton.filled(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
