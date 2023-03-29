@@ -408,13 +408,14 @@ class _OrderEntryState extends State<OrderEntry> {
                   "itemname": itemcontroller.text,
                   "qty": qtycontroller.text,
                   "rate": ratecontroller.text,
-                  "itemcode": itemcode,
+                  "item_code": itemcode,
                   "amount": amount.toString(),
                 });
                 itemData.add({
+                  "item_code": itemcode,
                   "qty": qtycontroller.text,
                   "rate": ratecontroller.text,
-                  "itemcode": itemcode,
+                  
                 });
                 print(itemData);
                 print(dataList);
