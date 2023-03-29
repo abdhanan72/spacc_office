@@ -23,13 +23,16 @@ class _CustomerSelectState extends State<CustomerSelect> {
   final FocusNode _focusNode = FocusNode();
   String? firmId;
   String? balance;
+  String formattedfor = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  String formattedshow = DateFormat('dd-MMM-yyyy').format(DateTime.now());
   String? orderdate;
   final TextEditingController customercontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    orderdate = '';
+    date.text = formattedshow;
+    orderdate = formattedfor;
     balance = '-------';
     customercode = '';
     getFirmId().then((value) {
@@ -263,7 +266,9 @@ class _CustomerSelectState extends State<CustomerSelect> {
                     },
                   ),
                 ),
-                SizedBox(height: mediaquery.height*0.02,),
+                SizedBox(
+                  height: mediaquery.height * 0.02,
+                ),
                 CupertinoButton.filled(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
