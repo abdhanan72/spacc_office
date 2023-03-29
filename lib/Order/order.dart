@@ -66,6 +66,9 @@ class _OrderEntryState extends State<OrderEntry> {
         0, (total, item) => total + double.parse(item['amount']!));
   }
 
+
+
+
   Map<String, dynamic> data = {};
 
   @override

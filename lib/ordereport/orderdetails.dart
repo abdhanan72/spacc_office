@@ -39,10 +39,22 @@ class _OrderDetailsState extends State<OrderDetails> {
       setState(() {
         orderData = jsonDecode(response.body)['data'];
         itemdata = orderData['itemdata'];
+        // ignore: avoid_function_literals_in_foreach_calls
+        itemdata.forEach((item) {
+          item.addAll({
+            'amount': (double.parse(item['qty']) * double.parse(item['rate']))
+                .toString()
+          });
+        });
       });
     } else {
       throw Exception('Failed to fetch order');
     }
+  }
+
+  double getSumOfAmounts() {
+    return itemdata.fold(
+        0, (total, item) => total + double.parse(item['amount']!));
   }
 
   String? firmId;
@@ -50,6 +62,17 @@ class _OrderDetailsState extends State<OrderDetails> {
   void initState() {
     fetchOrderDetails();
     super.initState();
+    fetchOrderDetails().then((_) {
+      setState(() {
+        // ignore: avoid_function_literals_in_foreach_calls
+        itemdata.forEach((item) {
+          item.addAll({
+            "amount": (double.parse(item["qty"]) * double.parse(item["rate"]))
+                .toString()
+          });
+        });
+      });
+    });
   }
 
   @override
@@ -102,24 +125,70 @@ class _OrderDetailsState extends State<OrderDetails> {
             SizedBox(
               height: mediaquery.height * 0.01,
             ),
-            orderData.isNotEmpty?
-            Text(
-              'Customer Name: ${orderData['cust_name']}',
-            ):const LinearProgressIndicator(),
-            itemdata.isNotEmpty?Expanded(
-              child: ListView.builder(
-                itemCount: itemdata.length,
-                itemBuilder: (context, index) {
-                  final item = itemdata[index];
-                  return ListTile(
-                    title:Text('itemcode:${item['item_code']}') ,
-                    subtitle:
-                        Text('Qty: ${item['qty']} - Rate: ${item['rate']}'),
-                  );
-                },
+            itemdata.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: itemdata.length,
+                      itemBuilder: (context, index) {
+                        final item = itemdata[index];
+                        return Column(
+                          children: [
+                            const Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: mediaquery.width * 0.02,
+                                  right: mediaquery.width * 0.01),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    item['item_name']!,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                                  SizedBox(
+                                    width: mediaquery.width * 0.1,
+                                  ),
+                                  Text("(${item["qty"]}X${item["rate"]})"),
+                                  SizedBox(
+                                    width: mediaquery.width * 0.2,
+                                  ),
+                                  Text(
+                                    item["amount"],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  )
+                : const LinearProgressIndicator(),
+                SizedBox(
+              height: mediaquery.height * 0.2,
+              width: mediaquery.width,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Colors.amber),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Total Amount:${getSumOfAmounts().toString()}",
+                      style: TextStyle(fontSize: mediaquery.width * 0.06),
+                    ),
+                    SizedBox(
+                      height: mediaquery.height * 0.01,
+                    ),
+
+                  ],
+                ),
               ),
-            ):const LinearProgressIndicator()
-            
+            )
           ],
         ),
       ),
