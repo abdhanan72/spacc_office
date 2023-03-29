@@ -161,7 +161,7 @@ class _OrderReportState extends State<OrderReport> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => OrderDetails(
-                                    
+                                      orddate: item['orddate'],
                                       custname: item['cust_name'],
                                       custnumber: item['cust_number'],
                                       totalamount: item['totalamount'],
