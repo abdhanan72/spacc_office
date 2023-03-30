@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -80,7 +82,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             "amount": (double.parse(item["qty"]) * double.parse(item["rate"]))
                 .toString()
           });
-        });      
+        });
       });
     });
   }
@@ -148,6 +150,52 @@ class _OrderDetailsState extends State<OrderDetails> {
                               thickness: 2,
                             ),
                             GestureDetector(
+                              onLongPress: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CupertinoAlertDialog(
+                                      title: Text('REMOVE',
+                                          style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.03,
+                                              fontWeight: FontWeight.bold)),
+                                      content: Column(
+                                        children: [
+                                          Lottie.asset(
+                                              'assets/100053-delete-bin.json',
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.2),
+                                          const Text(
+                                            'Are you sure you want to remove this item?',
+                                          )
+                                        ],
+                                      ),
+                                      actions: [
+                                        MaterialButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              itemdata.removeAt(index);
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          child: const Text('Yes'),
+                                        ),
+                                        MaterialButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('No'),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                               onTap: () {
                                 _showDialog(item);
                               },
@@ -201,17 +249,24 @@ class _OrderDetailsState extends State<OrderDetails> {
                       height: mediaquery.height * 0.01,
                     ),
                     CupertinoButton.filled(
-                      child: const Text('Add to cart'),
+                      child: const Text('Edit Order'),
                       onPressed: () {
-                       
-                       if (apimap.isNotEmpty) {
+                        setState(() {
+                          for (var item in itemdata) {
+                            Map<String, String> apiData = {
+                              'qty': item['qty'].toString(),
+                              'rate': item['rate'].toString(),
+                              'item_code': item['item_code']!,
+                            };
+                            apimap.add(apiData);
+                          }
+                        });
+                        if (apimap.isNotEmpty) {
                           editorder();
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OrderReport(),));
-                      Navigator.pop(context);
-                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('No changes made')));
-                         
-                       }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No items found')));
+                        }
                       },
                     ),
                   ],
@@ -388,7 +443,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                 ),
               ),
               TextField(
-                 keyboardType: TextInputType.number,
+                keyboardType: TextInputType.number,
                 controller: rateController,
                 decoration: const InputDecoration(
                   labelText: 'Rate',
@@ -413,15 +468,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                   item['amount'] =
                       (double.parse(item['qty']) * double.parse(item['rate']))
                           .toString();
-                for (var item in itemdata) {
-    Map<String, String> apiData = {
-      'qty': item['qty'].toString(),
-      'rate': item['rate'].toString(),
-      'item_code': item['item_code']!,
-    };
-    apimap.add(apiData);
-  }
-                  
                 });
                 Navigator.pop(context);
               },
@@ -450,11 +496,15 @@ class _OrderDetailsState extends State<OrderDetails> {
     final result = jsonDecode(response.body);
 
     if (result["response_code"] == 27) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Order Placed')));
+          .showSnackBar(const SnackBar(content: Text('Order Edit Succesfull')));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const OrderReport(),
+          ));
+      Navigator.pop(context);
     } else {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result["response_desc"])));
     }
