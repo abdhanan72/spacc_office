@@ -374,18 +374,21 @@ class _OrderDetailsState extends State<OrderDetails> {
                 ),
               ),
               TextField(
+                readOnly: true,
                 controller: itemCodeController,
                 decoration: const InputDecoration(
                   labelText: 'Item Code',
                 ),
               ),
               TextField(
+                keyboardType: TextInputType.number,
                 controller: qtyController,
                 decoration: const InputDecoration(
                   labelText: 'Quantity',
                 ),
               ),
               TextField(
+                 keyboardType: TextInputType.number,
                 controller: rateController,
                 decoration: const InputDecoration(
                   labelText: 'Rate',

@@ -30,6 +30,7 @@ TextEditingController itemcontroller2 = TextEditingController();
 TextEditingController ratecontroller = TextEditingController();
 TextEditingController qtycontroller = TextEditingController();
 String? firmId;
+ List<Map<String, String>> apimap = [];
 late double qtyint;
 late double rateint;
 late double amount;
@@ -66,10 +67,7 @@ class _OrderEntryState extends State<OrderEntry> {
         0, (total, item) => total + double.parse(item['amount']!));
   }
 
-
-
-
-  Map<String, dynamic> data = {};
+  List<Map<String, String>> data = [];
 
   @override
   Widget build(BuildContext context) {
@@ -127,39 +125,84 @@ class _OrderEntryState extends State<OrderEntry> {
                 itemCount: dataList.length,
                 itemBuilder: (context, index) {
                   final item = dataList[index];
-                  return Column(
-                    children: [
-                      const Divider(
-                        thickness: 2,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: mediaquery.width * 0.02,
-                            right: mediaquery.width * 0.01),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                              item['itemname']!,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                            SizedBox(
-                              width: mediaquery.width * 0.1,
+                  return GestureDetector(
+                    onLongPress: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return CupertinoAlertDialog(
+                            title: Text('REMOVE',
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.03,
+                                    fontWeight: FontWeight.bold)),
+                            content: Column(
+                              children: [
+                                Lottie.asset('assets/100053-delete-bin.json',
+                                    height: MediaQuery.of(context).size.height *
+                                        0.2),
+                                const Text(
+                                  'Are you sure you want to remove this item?',
+                                )
+                              ],
                             ),
-                            Text("(${item["qty"]}X${item["rate"]})"),
-                            SizedBox(
-                              width: mediaquery.width * 0.2,
-                            ),
-                            Text(
-                              item["amount"]!,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                            actions: [
+                              MaterialButton(
+                                onPressed: () {
+                                  setState(() {
+                                    dataList.removeAt(index);
+                                    Navigator.pop(context);
+                                  });
+                                  print(dataList);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('No'),
+                              )
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        const Divider(
+                          thickness: 2,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: mediaquery.width * 0.02,
+                              right: mediaquery.width * 0.01),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                item['itemname']!,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              )),
+                              SizedBox(
+                                width: mediaquery.width * 0.1,
+                              ),
+                              Text("(${item["qty"]}X${item["rate"]})"),
+                              SizedBox(
+                                width: mediaquery.width * 0.2,
+                              ),
+                              Text(
+                                item["amount"]!,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -182,6 +225,7 @@ class _OrderEntryState extends State<OrderEntry> {
                     CupertinoButton.filled(
                       child: const Text('ADD ITEMS'),
                       onPressed: () {
+                        print(dataList);
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -196,9 +240,18 @@ class _OrderEntryState extends State<OrderEntry> {
                       child: const Text('PLACE ORDER'),
                       onPressed: () {
                         if (dataList.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No items found')));
-                          
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No items found')));
                         } else {
+                         for (var item in dataList) {
+    Map<String, String> apiData = {
+      'qty': item['qty'].toString(),
+      'rate': item['rate'].toString(),
+      'item_code': item['item_code']!,
+    };
+    apimap.add(apiData);
+  }
+  print(apimap);
                           showdialog();
                         }
                       },
@@ -410,13 +463,6 @@ class _OrderEntryState extends State<OrderEntry> {
                   "item_code": itemcode,
                   "amount": amount.toString(),
                 });
-                itemData.add({
-                  "item_code": itemcode,
-                  "qty": qtycontroller.text,
-                  "rate": ratecontroller.text,
-                });
-                print(itemData);
-                print(dataList);
                 setState(() {
                   itemcode = '';
                   ratecontroller.clear();
@@ -458,7 +504,7 @@ class _OrderEntryState extends State<OrderEntry> {
         'fid': firmId,
         'amount': getSumOfAmounts().toString(),
         'custcode': custcode,
-        'itemdata': jsonEncode(itemData),
+        'itemdata': jsonEncode(apimap),
       },
     );
     final result = jsonDecode(response.body);
@@ -495,12 +541,12 @@ class _OrderEntryState extends State<OrderEntry> {
           actions: [
             MaterialButton(
               onPressed: () {
-                 sendPostRequest();
-                  setState(() {
-                    dataList.clear();
-                    itemData.clear();
-                  });
-                  Navigator.pop(context);
+                sendPostRequest();
+                setState(() {
+                  dataList.clear();
+                  itemData.clear();
+                });
+                Navigator.pop(context);
               },
               child: const Text('Yes'),
             ),
