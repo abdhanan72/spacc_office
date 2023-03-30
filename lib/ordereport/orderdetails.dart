@@ -101,20 +101,20 @@ TextEditingController itemcodecontroller = TextEditingController();
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        
+        title: Text(widget.custname),
+        actions: [
+          IconButton(onPressed: () {
+            
+          }, icon:const Icon(Icons.delete))
+        ],
+        
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(
-              height: mediaquery.height * .02,
-            ),
-            Text(
-              widget.custname,
-              style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal),
-              textAlign: TextAlign.center,
-            ),
+            
             SizedBox(
               height: mediaquery.height * 0.02,
             ),
