@@ -34,11 +34,21 @@ class _OrderDetailsState extends State<OrderDetails> {
   String? custnumber;
   String? custname;
   String? totalamount;
+  late double qtyint;
+late double rateint;
+late double amount;
+String? searchQuery;
+
   final FocusNode _focusNode = FocusNode();
+
   Map<String, dynamic> orderData = {};
   List<dynamic> itemdata = [];
   List<Map<String, String>> apimap = [];
-
+TextEditingController itemcontroller = TextEditingController();
+TextEditingController itemcontroller2 = TextEditingController();
+TextEditingController ratecontroller = TextEditingController();
+TextEditingController qtycontroller = TextEditingController();
+TextEditingController itemcodecontroller = TextEditingController();
   Future<void> fetchOrderDetails() async {
     final body = {
       'action': 'VIEW',
@@ -244,6 +254,19 @@ class _OrderDetailsState extends State<OrderDetails> {
                     Text(
                       "Total Amount:${getSumOfAmounts().toString()}",
                       style: TextStyle(fontSize: mediaquery.width * 0.06),
+                    ),
+                    SizedBox(
+                      height: mediaquery.height * 0.01,
+                    ),
+                    CupertinoButton.filled(
+                      child: const Text('Add Items'),
+                      onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return box();
+                            });
+                      },
                     ),
                     SizedBox(
                       height: mediaquery.height * 0.01,
@@ -523,4 +546,221 @@ class _OrderDetailsState extends State<OrderDetails> {
       throw Exception('Failed to load data');
     }
   }
+
+
+
+  Widget box() {
+    return AlertDialog(
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
+              child: TextFormField(
+                controller: itemcontroller,
+                decoration: InputDecoration(
+                  labelText: 'Item',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+                readOnly: true,
+                onTap: () {
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) {
+                      return StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          var mediaquery = MediaQuery.of(context);
+                          return Column(children: [
+                            SizedBox(
+                              height: mediaquery.size.height * 0.06,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: mediaquery.size.width * 0.1),
+                              child: TextField(
+                                autofocus: true,
+                                controller: itemcontroller2,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: const Color(0xff000080),
+                                        width: mediaquery.size.width * 0.01,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  hintText: 'Search...',
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    searchQuery = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: FutureBuilder<ItemList>(
+                                future: fetchitem(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<ItemList> snapshot) {
+                                  if (snapshot.hasData) {
+                                    final data = snapshot.data?.data;
+                                    var filteredData = data!
+                                        .where((item) => item.itemName
+                                            .toLowerCase()
+                                            .contains(
+                                                searchQuery?.toLowerCase() ??
+                                                    ''))
+                                        .toList();
+
+                                    return SizedBox(
+                                      width: mediaquery.size.width * 0.8,
+                                      child: ListView.builder(
+                                        itemCount: filteredData.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final ItemListData datum =
+                                              filteredData[index];
+                                          return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    itemcontroller2.text =
+                                                        datum.itemName;
+                                                    itemcontroller.text =
+                                                        datum.itemName;
+                                                    itemcodecontroller.text = datum.itemCode;
+                                                    ratecontroller.text =
+                                                        datum.salesrate;
+                                                    qtycontroller.text =
+                                                        1.toString();
+
+                                                    Navigator.pop(context);
+                                                    setState(() {
+                                                      _focusNode.unfocus();
+                                                    });
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      const Divider(
+                                                        thickness: 1,
+                                                        color: Colors.black,
+                                                      ),
+                                                      ListTile(
+                                                        title: Text(
+                                                            datum.itemName),
+                                                        selectedTileColor:
+                                                            const Color(
+                                                                0xff000080),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ]);
+                                        },
+                                      ),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Center(
+                                      child: SizedBox(
+                                        height: mediaquery.size.height * 0.6,
+                                        width: mediaquery.size.width * 0.9,
+                                        child:
+                                            Lottie.asset('assets/error.json'),
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(
+                                      child: SizedBox(
+                                        height: mediaquery.size.height * 0.6,
+                                        width: mediaquery.size.width * 0.9,
+                                        child: Lottie.asset(
+                                            'assets/99297-loading-files.json'),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            )
+                          ]);
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
+              child: TextFormField(
+                controller: ratecontroller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Rate',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
+              child: TextFormField(
+                focusNode: _focusNode,
+                keyboardType: TextInputType.number,
+                controller: qtycontroller,
+                decoration: InputDecoration(
+                  labelText: 'Qty',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                ),
+                onTap: () {},
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            CupertinoButton.filled(
+              child: const Text('Add to cart'),
+              onPressed: () {
+                setState(() {
+                  qtyint = double.parse(qtycontroller.text);
+                  rateint = double.parse(ratecontroller.text);
+                  amount = qtyint * rateint;
+                });
+                itemdata.add({
+                  "item_name": itemcontroller.text,
+                  "qty": qtycontroller.text,
+                  "rate": ratecontroller.text,
+                  "item_code": itemcodecontroller.text,
+                  "amount": amount.toString(),
+                });
+                setState(() {
+                  itemcodecontroller.clear();
+                  ratecontroller.clear();
+                  qtycontroller.clear();
+                  itemcontroller.clear();
+                  itemcontroller2.clear();
+                  searchQuery = '';
+                  Navigator.pop(context);
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
 }
