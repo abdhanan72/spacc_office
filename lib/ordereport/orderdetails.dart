@@ -785,7 +785,6 @@ class _OrderDetailsState extends State<OrderDetails> {
               onPressed: () {
                  Navigator.pop(context);
                 Navigator.pop(context);
-                Navigator.pop(context);
                 deleteOrder();
                 Navigator.pushReplacement(
                     context,
