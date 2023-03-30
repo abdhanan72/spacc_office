@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
-import 'package:spacc_office/ordereport/orderdetails.dart';
 import 'package:spacc_office/ordereport/orderview.dart';
 
 class OrderReport extends StatefulWidget {
