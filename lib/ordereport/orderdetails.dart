@@ -782,6 +782,8 @@ class _OrderDetailsState extends State<OrderDetails> {
           actions: [
             MaterialButton(
               onPressed: () {
+                 Navigator.pop(context);
+                Navigator.pop(context);
                 deleteOrder();
                 Navigator.pushReplacement(
                     context,
