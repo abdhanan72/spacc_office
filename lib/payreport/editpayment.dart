@@ -51,16 +51,13 @@ class _EditPaymentState extends State<EditPayment> {
 
   String? fid;
 
-Future<String?> getusername() async {
+  Future<String?> getusername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? username = prefs.getString('user_name');
     return username;
   }
- String? username;
 
-
-
-
+  String? username;
 
   String? pdt;
   String? query;
@@ -89,7 +86,7 @@ Future<String?> getusername() async {
     });
     getusername().then((value) {
       setState(() {
-        username=value!;
+        username = value!;
       });
     });
     super.initState();
@@ -509,8 +506,6 @@ Future<String?> getusername() async {
   }
 
   void editpayment() async {
-    
-
     final data = {
       'action': 'EDIT',
       'fid': fid,
@@ -520,30 +515,26 @@ Future<String?> getusername() async {
       'memo': memocontroller.text,
       'amount': amountcontroller.text,
       'paynumber': widget.paynum.toString(),
-      'username':username
+      'username': username
     };
 
     final response = await http.post(Uri.parse(paymenturl), body: data);
     var result = jsonDecode(response.body);
 
     if (mounted) {
-      if (result['response_code']==27) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment Edit Succesfull')));
-    } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Could not edit payment')));
-    }
-      
+      if (result['response_code'] == 27) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Payment Edit Succesfull')));
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not edit payment')));
+      }
     }
   }
 
   void deletePayment() async {
-    
-
     var response = await http.post(Uri.parse(paymenturl), body: {
       'action': 'DELETE',
       'fid': fid,

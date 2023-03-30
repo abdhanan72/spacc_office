@@ -35,20 +35,20 @@ class _OrderDetailsState extends State<OrderDetails> {
   String? custname;
   String? totalamount;
   late double qtyint;
-late double rateint;
-late double amount;
-String? searchQuery;
+  late double rateint;
+  late double amount;
+  String? searchQuery;
 
   final FocusNode _focusNode = FocusNode();
 
   Map<String, dynamic> orderData = {};
   List<dynamic> itemdata = [];
   List<Map<String, String>> apimap = [];
-TextEditingController itemcontroller = TextEditingController();
-TextEditingController itemcontroller2 = TextEditingController();
-TextEditingController ratecontroller = TextEditingController();
-TextEditingController qtycontroller = TextEditingController();
-TextEditingController itemcodecontroller = TextEditingController();
+  TextEditingController itemcontroller = TextEditingController();
+  TextEditingController itemcontroller2 = TextEditingController();
+  TextEditingController ratecontroller = TextEditingController();
+  TextEditingController qtycontroller = TextEditingController();
+  TextEditingController itemcodecontroller = TextEditingController();
   Future<void> fetchOrderDetails() async {
     final body = {
       'action': 'VIEW',
@@ -102,19 +102,18 @@ TextEditingController itemcodecontroller = TextEditingController();
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        
         title: Text(widget.custname),
         actions: [
-          IconButton(onPressed: () {
-            
-          }, icon:const Icon(Icons.delete))
+          IconButton(
+              onPressed: () {
+                deleteorderalert();
+              },
+              icon: const Icon(Icons.delete))
         ],
-        
       ),
       body: SafeArea(
         child: Column(
           children: [
-            
             SizedBox(
               height: mediaquery.height * 0.02,
             ),
@@ -261,7 +260,7 @@ TextEditingController itemcodecontroller = TextEditingController();
                     CupertinoButton.filled(
                       child: const Text('Add Items'),
                       onPressed: () {
-                          showDialog(
+                        showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return box();
@@ -547,8 +546,6 @@ TextEditingController itemcodecontroller = TextEditingController();
     }
   }
 
-
-
   Widget box() {
     return AlertDialog(
       content: SingleChildScrollView(
@@ -633,7 +630,8 @@ TextEditingController itemcodecontroller = TextEditingController();
                                                         datum.itemName;
                                                     itemcontroller.text =
                                                         datum.itemName;
-                                                    itemcodecontroller.text = datum.itemCode;
+                                                    itemcodecontroller.text =
+                                                        datum.itemCode;
                                                     ratecontroller.text =
                                                         datum.salesrate;
                                                     qtycontroller.text =
@@ -762,5 +760,65 @@ TextEditingController itemcodecontroller = TextEditingController();
       ),
     );
   }
-  
+
+  void deleteorderalert() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('DELETE',
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
+                  fontWeight: FontWeight.bold)),
+          content: Column(
+            children: [
+              Lottie.asset('assets/100053-delete-bin.json',
+                  height: MediaQuery.of(context).size.height * 0.2),
+              const Text(
+                'Are you sure you want to Delete this Order?',
+              )
+            ],
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                deleteOrder();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const OrderReport()));
+              },
+              child: const Text('Yes'),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('No'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void deleteOrder() async {
+    var response = await http.post(Uri.parse(orderurl), body: {
+      'action': 'DELETE',
+      'fid': widget.fid,
+      'ordnumber': widget.ordnumber.toString()
+    });
+
+    var jsonResponse = jsonDecode(response.body);
+    var responseDesc = jsonResponse['response_desc'];
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(responseDesc),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 }
