@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:spacc_office/License/urls.dart';
+import 'package:spacc_office/ordereport/orderreport.dart';
 
 import '../models/itemmodel.dart';
 
@@ -79,7 +80,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             "amount": (double.parse(item["qty"]) * double.parse(item["rate"]))
                 .toString()
           });
-        });
+        });      
       });
     });
   }
@@ -202,9 +203,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                     CupertinoButton.filled(
                       child: const Text('Add to cart'),
                       onPressed: () {
-                        print(apimap);
-                        print(widget.orddate);
-                        editorder();
+                       
+                       if (apimap.isNotEmpty) {
+                          editorder();
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OrderReport(),));
+                      Navigator.pop(context);
+                       } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('No changes made')));
+                         
+                       }
                       },
                     ),
                   ],
@@ -403,11 +410,15 @@ class _OrderDetailsState extends State<OrderDetails> {
                   item['amount'] =
                       (double.parse(item['qty']) * double.parse(item['rate']))
                           .toString();
-                  apimap.add({
-                    "item_code": item['item_code'],
-                    "qty": item['qty'],
-                    "rate": item['rate'],
-                  });
+                for (var item in itemdata) {
+    Map<String, String> apiData = {
+      'qty': item['qty'].toString(),
+      'rate': item['rate'].toString(),
+      'item_code': item['item_code']!,
+    };
+    apimap.add(apiData);
+  }
+                  
                 });
                 Navigator.pop(context);
               },
