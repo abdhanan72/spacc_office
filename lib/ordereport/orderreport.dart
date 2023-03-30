@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
 import 'package:spacc_office/ordereport/orderdetails.dart';
+import 'package:spacc_office/ordereport/orderview.dart';
 
 class OrderReport extends StatefulWidget {
   const OrderReport({super.key});
@@ -160,7 +161,7 @@ class _OrderReportState extends State<OrderReport> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => OrderDetails(
+                                  builder: (context) => OrderView(
                                       orddate: item['orddate'],
                                       custname: item['cust_name'],
                                       custnumber: item['cust_number'],

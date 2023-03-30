@@ -271,7 +271,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                       height: mediaquery.height * 0.01,
                     ),
                     CupertinoButton.filled(
-                      child: const Text('Edit Order'),
+                      child: const Text('Save Order'),
                       onPressed: () {
                         setState(() {
                           for (var item in itemdata) {
@@ -526,6 +526,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             builder: (context) => const OrderReport(),
           ));
       Navigator.pop(context);
+      // Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result["response_desc"])));
@@ -783,6 +784,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             MaterialButton(
               onPressed: () {
                  Navigator.pop(context);
+                Navigator.pop(context);
                 Navigator.pop(context);
                 deleteOrder();
                 Navigator.pushReplacement(
