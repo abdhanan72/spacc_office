@@ -51,9 +51,9 @@ class _PaymentReportState extends State<PaymentReport> {
     todate.text=formattedshow;
     super.initState();
   }
-
-  bool _isLoading = false;
   String? select;
+  bool _isLoading = false;
+  
   String? fid;
   TextEditingController fromdate = TextEditingController(),
       todate = TextEditingController();

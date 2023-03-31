@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spacc_office/Ledger/ledger.dart';
 import 'package:spacc_office/Receipt/receipt.dart';
 import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
 import 'package:spacc_office/ordereport/orderreport.dart';
@@ -17,9 +18,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
 String? username;
- String? fullname;
+String? fullname;
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -29,15 +29,15 @@ class _HomePageState extends State<HomePage> {
         fullname = value!;
       });
     });
-    
-    
+
     super.initState();
   }
+
   Future<String?> getfname() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  late String? fullname = prefs.getString('fullname');
-  return fullname;
-}
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? fullname = prefs.getString('fullname');
+    return fullname;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,18 +104,17 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: mediaquery.size.height * 0.03,
           ),
-          if(fullname!=null)
-          Text(
-            fullname!,
-            style: const TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff000080)),
-          ),
+          if (fullname != null)
+            Text(
+              fullname!,
+              style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff000080)),
+            ),
           SizedBox(
             height: mediaquery.size.height * 0.08,
           ),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -137,10 +136,10 @@ class _HomePageState extends State<HomePage> {
                       imagePath: 'assets/checklist.png', text: 'Order Entry')),
               GestureDetector(
                   onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ReceiptEntry(),
-                        )),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReceiptEntry(),
+                      )),
                   child: const Menuitem(
                       imagePath: 'assets/bill.png', text: 'Receipt Entry'))
             ],
@@ -159,14 +158,15 @@ class _HomePageState extends State<HomePage> {
                       )),
                   child: const Menuitem(
                       imagePath: 'assets/report.png', text: 'Payment Report')),
-                       GestureDetector(
+              GestureDetector(
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const ReceiptReport(),
                       )),
                   child: const Menuitem(
-                      imagePath: 'assets/recreport.png', text: 'Receipt Report')),
+                      imagePath: 'assets/recreport.png',
+                      text: 'Receipt Report')),
               GestureDetector(
                   onTap: () {
                     showdialog();
@@ -175,20 +175,31 @@ class _HomePageState extends State<HomePage> {
                       imagePath: 'assets/logout.png', text: 'Logout')),
             ],
           ),
-            SizedBox(
+          SizedBox(
             height: mediaquery.size.height * 0.05,
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children:  [
-            GestureDetector(
-               onTap: () => Navigator.push(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                  onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const OrderReport(),
                       )),
-              child:const Menuitem(imagePath: 'assets/orderreport.png', text:'Order Report'))
-          ],
-
+                  child: const Menuitem(
+                      imagePath: 'assets/orderreport.png',
+                      text: 'Order Report')),
+              GestureDetector(
+                onTap:() => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Ledgerreport(),
+                      )), 
+                  child: const Menuitem(
+                      imagePath: 'assets/accounting-book.png',
+                      text: 'Ledger Report'))
+            ],
           )
         ],
       ),
