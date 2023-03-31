@@ -168,11 +168,14 @@ class _HomePageState extends State<HomePage> {
                       imagePath: 'assets/recreport.png',
                       text: 'Receipt Report')),
               GestureDetector(
-                  onTap: () {
-                    showdialog();
-                  },
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OrderReport(),
+                      )),
                   child: const Menuitem(
-                      imagePath: 'assets/logout.png', text: 'Logout')),
+                      imagePath: 'assets/orderreport.png',
+                      text: 'Order Report')),
             ],
           ),
           SizedBox(
@@ -185,20 +188,17 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const OrderReport(),
+                        builder: (context) => const Ledgerreport(),
                       )),
                   child: const Menuitem(
-                      imagePath: 'assets/orderreport.png',
-                      text: 'Order Report')),
-              GestureDetector(
-                onTap:() => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Ledgerreport(),
-                      )), 
-                  child: const Menuitem(
                       imagePath: 'assets/accounting-book.png',
-                      text: 'Ledger Report'))
+                      text: 'Ledger Report')),
+              GestureDetector(
+                  onTap: () {
+                    showdialog();
+                  },
+                  child: const Menuitem(
+                      imagePath: 'assets/logout.png', text: 'Logout')),
             ],
           )
         ],
