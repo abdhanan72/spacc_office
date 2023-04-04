@@ -12,7 +12,7 @@ import 'package:spacc_office/License/urls.dart';
 import '../Payment/getheads.dart';
 
 class EditPayment extends StatefulWidget {
-  final int paynum;
+  final String paynum;
   final String paidto;
   final String paymentMethod;
   final String amount;

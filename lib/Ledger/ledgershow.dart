@@ -72,7 +72,7 @@ class _LedgerReportShowState extends State<LedgerReportShow> {
               child: ListView.builder(
                 itemCount: _data.length,
                 itemBuilder: (context, index) {
-                  final ledg = _data[index];
+                   final ledg = _data.reversed.toList()[index];
                   final isdebit = double.parse(ledg['debit']) != 0.000;
                   final iscredit = double.parse(ledg['credit']) != 0.000;
 

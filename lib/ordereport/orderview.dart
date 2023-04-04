@@ -83,10 +83,17 @@ class _OrderViewState extends State<OrderView> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          children: [SizedBox(
+          children: [
+            SizedBox(
               height: mediaquery.height * 0.02,
             ),
-            Text(widget.custname,style: TextStyle(color: Colors.teal,fontSize: mediaquery.width*0.09,fontWeight: FontWeight.bold),),
+            Text(
+              widget.custname,
+              style: TextStyle(
+                  color: Colors.teal,
+                  fontSize: mediaquery.width * 0.09,
+                  fontWeight: FontWeight.bold),
+            ),
             SizedBox(
               height: mediaquery.height * 0.02,
             ),
@@ -186,7 +193,7 @@ class _OrderViewState extends State<OrderView> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => OrderDetails(
-                                  ordnumber: widget.ordnumber,
+                                  ordnumber: widget.ordnumber.toString(),
                                   custnumber: widget.custnumber,
                                   custname: widget.custname,
                                   totalamount: widget.totalamount,

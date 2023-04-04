@@ -8,7 +8,7 @@ import 'package:spacc_office/payreport/editpayment.dart';
 import 'package:spacc_office/License/urls.dart';
 
 class PaymentDetails extends StatefulWidget {
-  final int paynum;
+  final String paynum;
   final String fid;
   const PaymentDetails({super.key, required this.paynum, required this.fid});
 

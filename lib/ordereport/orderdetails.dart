@@ -11,7 +11,7 @@ import 'package:spacc_office/ordereport/orderreport.dart';
 import '../models/itemmodel.dart';
 
 class OrderDetails extends StatefulWidget {
-  final int ordnumber;
+  final String ordnumber;
   final String custnumber;
   final String custname;
   final String totalamount;
@@ -52,7 +52,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   Future<void> fetchOrderDetails() async {
     final body = {
       'action': 'VIEW',
-      'ordnumber': widget.ordnumber.toString(),
+      'ordnumber': widget.ordnumber,
       'fid': widget.fid
     };
     final response = await http.post(Uri.parse(orderurl), body: body);
@@ -783,7 +783,7 @@ class _OrderDetailsState extends State<OrderDetails> {
           actions: [
             MaterialButton(
               onPressed: () {
-                 Navigator.pop(context);
+                Navigator.pop(context);
                 Navigator.pop(context);
                 deleteOrder();
                 Navigator.pushReplacement(
