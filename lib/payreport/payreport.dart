@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/payreport/paydetail.dart';
 import 'package:spacc_office/License/urls.dart';
@@ -14,8 +15,6 @@ class PaymentReport extends StatefulWidget {
 }
 
 class _PaymentReportState extends State<PaymentReport> {
-  
-
   Future<List<dynamic>> _fetchData() async {
     var response = await http.post(Uri.parse(paymenturl), body: {
       'action': 'LIST',
@@ -32,6 +31,7 @@ class _PaymentReportState extends State<PaymentReport> {
     String? fid = prefs.getString('firm_id');
     return fid;
   }
+
   String? apidate1;
   String? apidate2;
 
@@ -45,15 +45,16 @@ class _PaymentReportState extends State<PaymentReport> {
         fid = value!;
       });
     });
-    apidate1=formattedfor;
-    apidate2=formattedfor;
-    fromdate.text=formattedshow;
-    todate.text=formattedshow;
+    apidate1 = formattedfor;
+    apidate2 = formattedfor;
+    fromdate.text = formattedshow;
+    todate.text = formattedshow;
     super.initState();
   }
+
   String? select;
   bool _isLoading = false;
-  
+
   String? fid;
   TextEditingController fromdate = TextEditingController(),
       todate = TextEditingController();
@@ -87,10 +88,10 @@ class _PaymentReportState extends State<PaymentReport> {
                   String formateddate =
                       DateFormat("dd-MMM-yyyy").format(pickdate);
 
-                      String setdate1=DateFormat("yyyy-MM-dd").format(pickdate);
+                  String setdate1 = DateFormat("yyyy-MM-dd").format(pickdate);
                   setState(() {
                     fromdate.text = formateddate.toString();
-                    apidate1=setdate1;
+                    apidate1 = setdate1;
                   });
                 } else {}
               },
@@ -117,12 +118,12 @@ class _PaymentReportState extends State<PaymentReport> {
                 if (pickeddate != null) {
                   String formatdate =
                       DateFormat("dd-MMM-yyyy").format(pickeddate);
-                       String setdate2=DateFormat("yyyy-MM-dd").format(pickeddate);
+                  String setdate2 = DateFormat("yyyy-MM-dd").format(pickeddate);
                   setState(() {
                     todate.text = formatdate.toString();
-                    apidate2=setdate2;
+                    apidate2 = setdate2;
                   });
-                } 
+                }
               },
             ),
           ),
@@ -143,20 +144,18 @@ class _PaymentReportState extends State<PaymentReport> {
             FutureBuilder<List<dynamic>>(
               future: _fetchData(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
-                         var item = snapshot.data[index];
-                         String dt=snapshot.data[index]['paydate'];
-                          final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ssZ');
-                DateTime dateTime = dateFormat.parse(dt);
-                String formattedshow =
-                    DateFormat('dd-MMM-yyyy').format(dateTime);
-                
-                        
-                       
+                        var item = snapshot.data[index];
+                        String dt = snapshot.data[index]['paydate'];
+                        final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ssZ');
+                        DateTime dateTime = dateFormat.parse(dt);
+                        String formattedshow =
+                            DateFormat('dd-MMM-yyyy').format(dateTime);
+
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -193,7 +192,6 @@ class _PaymentReportState extends State<PaymentReport> {
                                               text: '#: ',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.normal,
-                                                
                                                 color: Colors.black,
                                               ),
                                               children: [
@@ -201,7 +199,6 @@ class _PaymentReportState extends State<PaymentReport> {
                                                   text: '${item['paynumber']}',
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    
                                                     color: Colors.black,
                                                   ),
                                                 ),
@@ -213,7 +210,6 @@ class _PaymentReportState extends State<PaymentReport> {
                                               text: 'Date: ',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.normal,
-                                                
                                                 color: Colors.black,
                                               ),
                                               children: [
@@ -221,14 +217,12 @@ class _PaymentReportState extends State<PaymentReport> {
                                                   text: formattedshow,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    
                                                     color: Colors.black,
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          
                                         ],
                                       ),
                                       SizedBox(
@@ -242,29 +236,31 @@ class _PaymentReportState extends State<PaymentReport> {
                                         ],
                                       ),
                                       Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              
                                               item['acname'],
-                                              style: const TextStyle(fontWeight: FontWeight.bold),
-                                              ),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                           Row(
                                             children: [
-                                               Icon(
-                                            
-                                            Icons.currency_rupee,size: mediaquery.height*0.02,),
-                                              Text(item['amount'],
-                                           style: const TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold),
-                                          ),
-                                         
+                                              Icon(
+                                                Icons.currency_rupee,
+                                                size: mediaquery.height * 0.02,
+                                              ),
+                                              Text(
+                                                item['amount'],
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ],
                                           )
-                                          
                                         ],
                                       )
                                     ]),
@@ -273,8 +269,8 @@ class _PaymentReportState extends State<PaymentReport> {
                       },
                     ),
                   );
-                } else if (snapshot.hasError) {
-                  return const Text("Not a valid date ");
+                } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  return Lottie.asset('assets/emptydata.json');
                 }
                 return const LinearProgressIndicator();
               },

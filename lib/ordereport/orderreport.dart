@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
 import 'package:spacc_office/ordereport/orderview.dart';
@@ -143,7 +144,7 @@ class _OrderReportState extends State<OrderReport> {
             FutureBuilder<List<dynamic>>(
               future: _fetchData(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
@@ -270,8 +271,8 @@ class _OrderReportState extends State<OrderReport> {
                       },
                     ),
                   );
-                } else if (snapshot.hasError) {
-                  return const Text("Not a valid date ");
+                } else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  return Lottie.asset('assets/emptydata.json');
                 }
                 return const LinearProgressIndicator();
               },

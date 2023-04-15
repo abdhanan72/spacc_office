@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/ReceiptReport/recdetails.dart';
 import 'package:spacc_office/License/urls.dart';
-
+import 'package:lottie/lottie.dart';
 class ReceiptReport extends StatefulWidget {
   const ReceiptReport({super.key});
 
@@ -143,7 +143,7 @@ class _ReceiptReportState extends State<ReceiptReport> {
             FutureBuilder<List<dynamic>>(
               future: fetchReceiptReport(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
                       itemCount: snapshot.data.length,
@@ -273,8 +273,8 @@ class _ReceiptReportState extends State<ReceiptReport> {
                       },
                     ),
                   );
-                } else if (snapshot.hasError) {
-                  return const Text("Not a valid date ");
+                }  else if (snapshot.hasData && snapshot.data.isEmpty) {
+                  return Lottie.asset('assets/emptydata.json');
                 }
                 return const Center(child:  LinearProgressIndicator());
               },
