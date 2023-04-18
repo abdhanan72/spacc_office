@@ -545,6 +545,7 @@ class _OrderEntryState extends State<OrderEntry> {
                 setState(() {
                   dataList.clear();
                   itemData.clear();
+                  apimap.clear();
                 });
                 Navigator.pop(context);
               },
