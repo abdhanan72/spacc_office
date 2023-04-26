@@ -41,6 +41,9 @@ dependencies:
   open_settings: ^2.0.2
   internet_connection_checker: ^1.0.0+1
   intl: ^0.18.0
+  bluetooth_print: ^4.3.0
+  flutter_bluetooth_serial: ^0.4.0
+  blue_thermal_printer: ^1.2.3
   
 dev_dependencies:
   flutter_test:

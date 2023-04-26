@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
+import 'package:spacc_office/Order/print.dart';
 
 import '../models/itemmodel.dart';
 
@@ -219,6 +220,10 @@ class _OrderEntryState extends State<OrderEntry> {
                       "Total Amount:${getSumOfAmounts().toString()}",
                       style: TextStyle(fontSize: mediaquery.width * 0.06),
                     ),
+                    SizedBox(
+                      height: mediaquery.height * 0.01,
+                    ),
+                    IconButton(onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => Print(apimap: apimap),)), icon: const Icon(Icons.print)),
                     SizedBox(
                       height: mediaquery.height * 0.01,
                     ),

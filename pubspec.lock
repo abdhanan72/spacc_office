@@ -25,6 +25,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  blue_thermal_printer:
+    dependency: "direct main"
+    description:
+      name: blue_thermal_printer
+      sha256: "2b8a93f90be335494d2172dbc869c31b95638087f89591b4ad69fd9305eaf80b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.3"
+  bluetooth_print:
+    dependency: "direct main"
+    description:
+      name: bluetooth_print
+      sha256: b391cd7b22b772e07dfddb4e065ecbed5f0e8dd777ce726e1ea56492c8d3ecc8
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -126,6 +142,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_bluetooth_serial:
+    dependency: "direct main"
+    description:
+      name: flutter_bluetooth_serial
+      sha256: "85ae82c4099b2b1facdc54e75e1bcfa88dc7f719e55dc886bb0b648cb16636b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -328,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   shared_preferences:
     dependency: "direct main"
     description:
