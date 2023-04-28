@@ -1,6 +1,10 @@
-import 'package:bluetooth_print/bluetooth_print_model.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:bluetooth_print/bluetooth_print_model.dart' as thr;
 import 'package:flutter/material.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:spacc_office/Order/order.dart';
 
 class Print extends StatefulWidget {
   final List<Map<String, String>> apimap;
@@ -12,8 +16,10 @@ class Print extends StatefulWidget {
 
 class _PrintState extends State<Print> {
   BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
-  List<BluetoothDevice> devices = [];
+  List<thr.BluetoothDevice> devices = [];
   String devicemsg = "";
+  thr.BluetoothDevice? selectedDevice;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => initprinter());
@@ -37,6 +43,29 @@ class _PrintState extends State<Print> {
     });
   }
 
+  Future<void> printData() async {
+    if (selectedDevice == null) return;
+
+    BluetoothConnection connection;
+    try {
+      connection = await BluetoothConnection.toAddress(selectedDevice!.address);
+      print("Connected to printer.");
+    } catch (ex) {
+      print("Error connecting to printer: $ex");
+      return;
+    }
+
+    // Send "Hello World" to the printer
+    String text = "Hello World this is a test print from my flutter APP\n";
+    Uint8List bytes = Uint8List.fromList(utf8.encode(text));
+    connection.output.add(bytes);
+    await connection.output.allSent;
+
+    // Close the connection
+    await connection.close();
+    print("Connection closed.");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +81,10 @@ class _PrintState extends State<Print> {
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   onTap: () {
-                    startprint(devices[index]);
+                    setState(() {
+                      selectedDevice = devices[index];
+                    });
+                    printData();
                   },
                   leading: const Icon(Icons.print),
                   title: Text(devices[index].name!),
@@ -61,22 +93,5 @@ class _PrintState extends State<Print> {
               },
             ),
     );
-  }
-
-  Future<void> startprint(BluetoothDevice device) async {
-    if (device.address != null) {
-      await bluetoothPrint.connect(device);
-      List<LineText> list = [];
-      Map<String, dynamic> config = Map();
-
-      list.add(LineText(
-          type: LineText.TYPE_TEXT,
-          content: "Hindustan Foods\n",
-          weight: 2,
-          width: 2,
-          height: 2,
-          align: LineText.ALIGN_CENTER,
-          linefeed: 1));
-    }
   }
 }
