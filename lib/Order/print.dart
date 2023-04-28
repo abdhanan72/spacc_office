@@ -56,69 +56,75 @@ class _PrintState extends State<Print> {
     }
 
     // Send "Hello World" to the printer
-String receipt = "-------------------------------------------\n";
-receipt += "                Hindustan Foods\n";
-receipt += "                 123 Main St.\n";
-receipt += "                City, State ZIP\n";
-receipt += "              Tel: (555) 555-5555\n";
-receipt += "        Date: ${DateTime.now().toString()}\n";
-receipt += "----------------------------------------------\n";
-receipt += "    ITEM                  QTY   RATE    AMOUNT\n";
-receipt += "----------------------------------------------\n";
+    String receipt = "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(24);
+    receipt += "              Hindustan Foods\n";
+     receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(0);
+    receipt += "              123 Main St.\n";
+    receipt += "             City, State ZIP\n";
+    receipt += "           Tel: (555) 555-5555\n";
+    receipt += "      Date: ${DateTime.now().toString()}\n";
+    receipt += "------------------------------------------------\n";
+    receipt += "ITEM                QTY    RATE    AMOUNT\n";
+    receipt += "------------------------------------------------\n";
 
-double total = 0.0;
-for (var item in widget.apimap) {
-  String itemName = item['itemname']!;
-  int qty = int.tryParse(item['qty']!) ?? 0;
-  double rate = double.tryParse(item['rate']!) ?? 0.0;
-  double amount = qty * rate;
-  total += amount;
-  String amountString = amount.toStringAsFixed(2);
-  int itemPadding = (0.65 * 32).floor();
-  int remainingWidth = 32 - itemPadding;
-  String qtyString = qty.toString().padLeft(3);
-  String rateString = rate.toStringAsFixed(2).padLeft(1);
-  String line = itemName.substring(0, remainingWidth).padRight(itemPadding) +
-      qtyString +
-      ' ' * 5 +
-      rateString +
-      ' ' * 4 +
-      amountString;
-  receipt += '    ' + line + '\n';
-  if (itemName.length > remainingWidth) {
-    for (int i = remainingWidth; i < itemName.length; i += remainingWidth) {
-      int endIndex = i + remainingWidth;
-      if (endIndex > itemName.length) {
-        endIndex = itemName.length;
+    double total = 0.0;
+    for (var item in widget.apimap) {
+      String itemName = item['itemname']!;
+      int qty = int.tryParse(item['qty']!) ?? 0;
+      double rate = double.tryParse(item['rate']!) ?? 0.0;
+      double amount = qty * rate;
+      total += amount;
+      String amountString = amount.toStringAsFixed(2);
+      int itemPadding = 18;
+      int remainingWidth = 32 - itemPadding;
+      String qtyString = qty.toString().padLeft(3);
+      String rateString = rate.toStringAsFixed(2).padLeft(6);
+      String line =
+          itemName.substring(0, remainingWidth).padRight(itemPadding) +
+              qtyString +
+              ' ' * 4 +
+              rateString +
+              ' ' * 6 +
+              amountString;
+      receipt += line + '\n';
+      if (itemName.length > remainingWidth) {
+        for (int i = remainingWidth; i < itemName.length; i += remainingWidth) {
+          int endIndex = i + remainingWidth;
+          if (endIndex > itemName.length) {
+            endIndex = itemName.length;
+          }
+          line = itemName.substring(i, endIndex).padRight(itemPadding) +
+              ' ' * (3 + 6 + 3) +
+              ' ' * (amountString.length - 1) +
+              '\n';
+          receipt += line;
+        }
       }
-      line = itemName.substring(i, endIndex).padRight(itemPadding) +
-          ' ' * (3 + 5 + 7 + 4) +
-          ' ' * (amountString.length - 1) +
-          '\n';
-      receipt += '    ' + line;
     }
-  }
-}
 
+    receipt += "------------------------------------------------\n";
+    receipt +=
+        "                 Total:${total.toStringAsFixed(2).padLeft(9)}\n";
+    receipt += "------------------------------------------------\n";
+    receipt += "        Thank you for your business!\n";
+    // receipt += "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(74) +
+        String.fromCharCode(110);
 
-receipt += "------------------------------------------------\n";
-receipt += "              Total: ${total.toStringAsFixed(2).padLeft(8)}\n";
-receipt += "------------------------------------------------\n";
-receipt += "        Thank you for your business!\n";
-receipt += "------------------------------------------------\n";
+    // Send the receipt to the printer
+    Uint8List bytes = Uint8List.fromList(utf8.encode(receipt));
+    connection.output.add(bytes);
+    await connection.output.allSent;
 
-
-
-
-  // Send the receipt to the printer
-  Uint8List bytes = Uint8List.fromList(utf8.encode(receipt));
-  connection.output.add(bytes);
-  await connection.output.allSent;
-
-  // Close the connection
-  await connection.close();
-  print("Connection closed.");
-
+    // Close the connection
+    await connection.close();
+    print("Connection closed.");
   }
 
   @override
