@@ -75,15 +75,14 @@ class _OrderEntryState extends State<OrderEntry> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: IconButton(
-                        onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Print(apimap: apimap),
-                            )),
-                        icon: const Icon(Icons.print)),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Print(apimap: dataList),
+              )),
+          icon: const Icon(Icons.print)),
       body: SafeArea(
         child: Column(
-          
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
@@ -231,8 +230,6 @@ class _OrderEntryState extends State<OrderEntry> {
                     SizedBox(
                       height: mediaquery.height * 0.01,
                     ),
-                    
-
                     CupertinoButton.filled(
                       child: const Text('ADD ITEMS'),
                       onPressed: () {
