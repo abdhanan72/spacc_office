@@ -60,16 +60,16 @@ class _PrintState extends State<Print> {
     receipt += String.fromCharCode(27) +
         String.fromCharCode(33) +
         String.fromCharCode(24);
-    receipt += "              Hindustan Foods\n";
+    receipt += "                 Hindustan Foods\n";
      receipt += String.fromCharCode(27) +
         String.fromCharCode(33) +
         String.fromCharCode(0);
-    receipt += "              123 Main St.\n";
-    receipt += "             City, State ZIP\n";
-    receipt += "           Tel: (555) 555-5555\n";
-    receipt += "      Date: ${DateTime.now().toString()}\n";
+    receipt += "                  123 Main St.\n";
+    receipt += "                 City, State ZIP\n";
+    receipt += "               Tel: (555) 555-5555\n";
+    receipt += "         Date: ${DateTime.now().toString()}\n";
     receipt += "------------------------------------------------\n";
-    receipt += "ITEM                QTY    RATE    AMOUNT\n";
+    receipt += "ITEM                QTY    RATE           AMOUNT\n";
     receipt += "------------------------------------------------\n";
 
     double total = 0.0;
@@ -108,8 +108,14 @@ class _PrintState extends State<Print> {
     }
 
     receipt += "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(24);
     receipt +=
-        "                 Total:${total.toStringAsFixed(2).padLeft(9)}\n";
+        "                 Total: ${total.toStringAsFixed(2).padLeft(9)}\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(0);    
     receipt += "------------------------------------------------\n";
     receipt += "        Thank you for your business!\n";
     // receipt += "------------------------------------------------\n";
