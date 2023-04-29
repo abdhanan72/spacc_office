@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Ledger/ledger.dart';
+import 'package:spacc_office/Order/print.dart';
 import 'package:spacc_office/Receipt/receipt.dart';
 import 'package:spacc_office/ReceiptReport/receiptrepo.dart';
 import 'package:spacc_office/ordereport/orderreport.dart';
@@ -89,6 +90,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      floatingActionButton: IconButton(
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Print(),
+              )),
+          icon: const Icon(Icons.print)),
         body: SafeArea(
             child: Padding(
       padding: EdgeInsets.only(top: mediaquery.size.height * 0.07),

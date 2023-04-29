@@ -1,14 +1,15 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
-import 'package:spacc_office/Order/print.dart';
 
 import '../models/itemmodel.dart';
 
@@ -44,6 +45,7 @@ String? orderdate;
 class _OrderEntryState extends State<OrderEntry> {
   @override
   void initState() {
+    getDefaultPrinterAddress();
     super.initState();
     orderdate = widget.orderdate;
     custcode = widget.customercode;
@@ -53,6 +55,12 @@ class _OrderEntryState extends State<OrderEntry> {
         firmId = value!;
       });
     });
+  }
+
+  Future<String> getDefaultPrinterAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? defaultPrinterAddress = prefs.getString('defaultPrinter');
+    return defaultPrinterAddress ?? 'No default printer selected';
   }
 
   Future<String?> getFirmId() async {
@@ -75,11 +83,10 @@ class _OrderEntryState extends State<OrderEntry> {
     var mediaquery = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: IconButton(
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Print(apimap: dataList),
-              )),
+          onPressed: () {
+            printData();
+            // dataList.clear();
+          },
           icon: const Icon(Icons.print)),
       body: SafeArea(
         child: Column(
@@ -526,6 +533,99 @@ class _OrderEntryState extends State<OrderEntry> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result["response_desc"])));
     }
+  }
+
+  Future<void> printData() async {
+    String printerAddress = await getDefaultPrinterAddress();
+    if (printerAddress == 'No default printer selected') {
+      return;
+    }
+
+    BluetoothConnection connection;
+    try {
+      connection = await BluetoothConnection.toAddress(printerAddress);
+      print("Connected to printer.");
+    } catch (ex) {
+      print("Error connecting to printer: $ex");
+      return;
+    }
+
+    // Send "Hello World" to the printer
+    String receipt = "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(24);
+    receipt += "                 Hindustan Foods\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(0);
+    receipt += "                  123 Main St.\n";
+    receipt += "                 City, State ZIP\n";
+    receipt += "               Tel: (555) 555-5555\n";
+    receipt += "         Date: ${DateTime.now().toString()}\n";
+    receipt += "------------------------------------------------\n";
+    receipt += "ITEM                QTY    RATE           AMOUNT\n";
+    receipt += "------------------------------------------------\n";
+
+    double total = 0.0;
+    for (var item in dataList) {
+      String itemName = item['itemname']!;
+      int qty = int.tryParse(item['qty']!) ?? 0;
+      double rate = double.tryParse(item['rate']!) ?? 0.0;
+      double amount = qty * rate;
+      total += amount;
+      String amountString = amount.toStringAsFixed(2);
+      int itemPadding = 18;
+      int remainingWidth = 32 - itemPadding;
+      String qtyString = qty.toString().padLeft(3);
+      String rateString = rate.toStringAsFixed(2).padLeft(6);
+      String line =
+          itemName.substring(0, remainingWidth).padRight(itemPadding) +
+              qtyString +
+              ' ' * 4 +
+              rateString +
+              ' ' * 9 +
+              amountString;
+      receipt += '$line\n';
+      if (itemName.length > remainingWidth) {
+        for (int i = remainingWidth; i < itemName.length; i += remainingWidth) {
+          int endIndex = i + remainingWidth;
+          if (endIndex > itemName.length) {
+            endIndex = itemName.length;
+          }
+          line = '${itemName.substring(i, endIndex).padRight(itemPadding)}${' ' * (3 + 6 + 3)}${' ' * (amountString.length - 1)}\n';
+          receipt += line;
+        }
+      }
+      receipt += String.fromCharCode(27) +
+          String.fromCharCode(74) +
+          String.fromCharCode(50);
+    }
+
+    receipt += "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(24);
+    receipt +=
+        "                 Total: ${total.toStringAsFixed(2).padLeft(9)}\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(33) +
+        String.fromCharCode(0);
+    receipt += "------------------------------------------------\n";
+    receipt += "        Thank you for your business!\n";
+    // receipt += "------------------------------------------------\n";
+    receipt += String.fromCharCode(27) +
+        String.fromCharCode(74) +
+        String.fromCharCode(110);
+
+    // Send the receipt to the printer
+    Uint8List bytes = Uint8List.fromList(utf8.encode(receipt));
+    connection.output.add(bytes);
+    await connection.output.allSent;
+
+    // Close the connection
+    await connection.close();
+    print("Connection closed.");
   }
 
   void showdialog() {
