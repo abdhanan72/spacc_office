@@ -564,7 +564,7 @@ class _OrderEntryState extends State<OrderEntry> {
     receipt += "               Tel: (555) 555-5555\n";
     receipt += "         Date: ${DateTime.now().toString()}\n";
     receipt += "------------------------------------------------\n";
-    receipt += "ITEM                QTY    RATE           AMOUNT\n";
+    receipt += "ITEM              QTY    RATE           AMOUNT\n";
     receipt += "------------------------------------------------\n";
 
     double total = 0.0;
@@ -584,7 +584,7 @@ class _OrderEntryState extends State<OrderEntry> {
               qtyString +
               ' ' * 4 +
               rateString +
-              ' ' * 9 +
+              ' ' * 6 +
               amountString;
       receipt += '$line\n';
       if (itemName.length > remainingWidth) {
