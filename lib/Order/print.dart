@@ -29,7 +29,7 @@ class _PrintState extends State<Print> {
     checkDefaultPrinter();
 
     // start scanning for devices
-    bluetoothPrint.startScan(timeout: const Duration(seconds: 2));
+    bluetoothPrint.startScan(timeout: const Duration(seconds: 60));
     bluetoothPrint.scanResults.listen((val) {
       if (!mounted) return;
       setState(() {

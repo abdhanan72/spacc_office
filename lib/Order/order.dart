@@ -551,11 +551,11 @@ class _OrderEntryState extends State<OrderEntry> {
     }
 
     // Send "Hello World" to the printer
-    String receipt = "------------------------------------------------\n";
-    receipt += String.fromCharCode(27) +
+     
+   String receipt = String.fromCharCode(27) +
         String.fromCharCode(33) +
         String.fromCharCode(24);
-    receipt += "                 Hindustan Foods\n";
+    receipt += "                Hindustan Foods\n";
     receipt += String.fromCharCode(27) +
         String.fromCharCode(33) +
         String.fromCharCode(0);
@@ -564,7 +564,7 @@ class _OrderEntryState extends State<OrderEntry> {
     receipt += "               Tel: (555) 555-5555\n";
     receipt += "         Date: ${DateTime.now().toString()}\n";
     receipt += "------------------------------------------------\n";
-    receipt += "ITEM              QTY    RATE           AMOUNT\n";
+    receipt += "ITEM              QTY    RATE         AMOUNT\n";
     receipt += "------------------------------------------------\n";
 
     double total = 0.0;
@@ -584,7 +584,7 @@ class _OrderEntryState extends State<OrderEntry> {
               qtyString +
               ' ' * 4 +
               rateString +
-              ' ' * 6 +
+              ' ' * 3 +
               amountString;
       receipt += '$line\n';
       if (itemName.length > remainingWidth) {
