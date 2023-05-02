@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                     height: mediaquery.size.height * 0.1),
                 const Text(
                   'Are you sure you want to logout?',
-                )
+                ),
               ],
             ),
             actions: [
