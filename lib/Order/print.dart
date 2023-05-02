@@ -66,7 +66,7 @@ class _PrintState extends State<Print> {
   
 
   Future<void> initprinter() async {
-    bluetoothPrint.startScan(timeout: const Duration(seconds: 2));
+    bluetoothPrint.startScan(timeout: const Duration(seconds: 50));
     if (!mounted) return;
 
     bluetoothPrint.scanResults.listen((val) {

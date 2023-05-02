@@ -90,128 +90,145 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      floatingActionButton: IconButton(
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Print(),
-              )),
-          icon: const Icon(Icons.print)),
+        appBar: AppBar(
+          title: const Text('spAcc software'),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Print(),
+                    )),
+                child: const ListTile(
+                  leading: Icon(Icons.print),
+                  title: Text('Print Settings'),
+                ),
+              ),
+              InkWell(
+                onTap: () => showdialog(),
+                child: const ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Logout'),
+                ),
+              )
+            ],
+          ),
+        ),
         body: SafeArea(
             child: Padding(
-      padding: EdgeInsets.only(top: mediaquery.size.height * 0.07),
-      child: Column(
-        children: [
-          const Text(
-            "HELLO",
-            style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff000080)),
-          ),
-          SizedBox(
-            height: mediaquery.size.height * 0.03,
-          ),
-          if (fullname != null)
-            Text(
-              fullname!,
-              style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff000080)),
-            ),
-          SizedBox(
-            height: mediaquery.size.height * 0.08,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          padding: EdgeInsets.only(top: mediaquery.size.height * 0.07),
+          child: Column(
             children: [
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Payment(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/receipt.png', text: 'Payment Entry')),
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CustomerSelect(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/checklist.png', text: 'Order Entry')),
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReceiptEntry(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/bill.png', text: 'Receipt Entry'))
+              const Text(
+                "HELLO",
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff000080)),
+              ),
+              SizedBox(
+                height: mediaquery.size.height * 0.03,
+              ),
+              if (fullname != null)
+                Text(
+                  fullname!,
+                  style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff000080)),
+                ),
+              SizedBox(
+                height: mediaquery.size.height * 0.08,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Payment(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/receipt.png',
+                          text: 'Payment Entry')),
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CustomerSelect(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/checklist.png',
+                          text: 'Order Entry')),
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReceiptEntry(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/bill.png', text: 'Receipt Entry'))
+                ],
+              ),
+              SizedBox(
+                height: mediaquery.size.height * 0.05,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PaymentReport(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/report.png',
+                          text: 'Payment Report')),
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReceiptReport(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/recreport.png',
+                          text: 'Receipt Report')),
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrderReport(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/orderreport.png',
+                          text: 'Order Report')),
+                ],
+              ),
+              SizedBox(
+                height: mediaquery.size.height * 0.05,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Ledgerreport(),
+                          )),
+                      child: const Menuitem(
+                          imagePath: 'assets/accounting-book.png',
+                          text: 'Ledger Report')),
+                ],
+              )
             ],
           ),
-          SizedBox(
-            height: mediaquery.size.height * 0.05,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PaymentReport(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/report.png', text: 'Payment Report')),
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReceiptReport(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/recreport.png',
-                      text: 'Receipt Report')),
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OrderReport(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/orderreport.png',
-                      text: 'Order Report')),
-            ],
-          ),
-          SizedBox(
-            height: mediaquery.size.height * 0.05,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Ledgerreport(),
-                      )),
-                  child: const Menuitem(
-                      imagePath: 'assets/accounting-book.png',
-                      text: 'Ledger Report')),
-              GestureDetector(
-                  onTap: () {
-                    showdialog();
-                  },
-                  child: const Menuitem(
-                      imagePath: 'assets/logout.png', text: 'Logout')),
-            ],
-          )
-        ],
-      ),
-    )));
+        )));
   }
 }
 
