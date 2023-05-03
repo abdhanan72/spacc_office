@@ -584,7 +584,7 @@ class _OrderEntryState extends State<OrderEntry> {
               qtyString +
               ' ' * 4 +
               rateString +
-              ' ' * 3 +
+              ' ' * 5 +
               amountString;
       receipt += '$line\n';
       if (itemName.length > remainingWidth) {
@@ -599,7 +599,7 @@ class _OrderEntryState extends State<OrderEntry> {
       }
       receipt += String.fromCharCode(27) +
           String.fromCharCode(74) +
-          String.fromCharCode(50);
+          String.fromCharCode(20);
     }
 
     receipt += "------------------------------------------------\n";
@@ -612,7 +612,7 @@ class _OrderEntryState extends State<OrderEntry> {
         String.fromCharCode(33) +
         String.fromCharCode(0);
     receipt += "------------------------------------------------\n";
-    receipt += "        Thank you for your business!\n";
+    receipt += "          Thank you for your business!\n";
     // receipt += "------------------------------------------------\n";
     receipt += String.fromCharCode(27) +
         String.fromCharCode(74) +
