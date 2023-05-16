@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var url = Uri.parse(
-          'http://cloud.spaccsoftware.com/hanan_api/test/alogin.php?unm=$unm&pwd=$pwd');
+          'http://cloud.spaccsoftware.com/hanan_api/common/login.php?unm=$unm&pwd=$pwd');
       final response = await http.get(url);
       return response;
     } else {
