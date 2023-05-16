@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:spacc_office/License/urls.dart';
 
 import '../models/headsmodel.dart';
 
@@ -12,7 +13,7 @@ Future<ItemModel> fetchdata(
     {required String fid,
     }) async {
   final response = await http.get(Uri.parse(
-      'http://cloud.spaccsoftware.com/hanan_api/accounts/heads_list.php?fid=$fid'));
+      '$headsurl?fid=$fid'));
 
   if (response.statusCode == 200) {
     final responseJson = jsonDecode(response.body) as Map<String, dynamic>;

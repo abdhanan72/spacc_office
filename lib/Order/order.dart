@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/License/urls.dart';
+import 'package:spacc_office/Order/itemapi.dart';
 
 import '../models/itemmodel.dart';
 
@@ -495,19 +496,7 @@ class _OrderEntryState extends State<OrderEntry> {
     );
   }
 
-  Future<ItemList> fetchitem() async {
-    final data = {'action': 'LIST', 'fid': firmId};
-
-    final response = await http.post(Uri.parse(itemsurl), body: data);
-
-    if (response.statusCode == 200) {
-      final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
-      final itemmodel = ItemList.fromJson(responseJson);
-      return itemmodel;
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
+  
 
   Future<void> sendPostRequest() async {
     final response = await http.post(
