@@ -42,10 +42,16 @@ final FocusNode _focusNode = FocusNode();
 late String itemcode;
 String? custcode;
 String? orderdate;
+String? smcode;
 
 class _OrderEntryState extends State<OrderEntry> {
   @override
   void initState() {
+    getsmcode().then((value) {
+      setState(() {
+        smcode = value;
+      });
+    });
     getDefaultPrinterAddress();
     super.initState();
     orderdate = widget.orderdate;
@@ -56,6 +62,12 @@ class _OrderEntryState extends State<OrderEntry> {
         firmId = value!;
       });
     });
+  }
+
+  Future<String?> getsmcode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? smcode = prefs.getString('sm_code');
+    return smcode;
   }
 
   Future<String> getDefaultPrinterAddress() async {
@@ -496,20 +508,23 @@ class _OrderEntryState extends State<OrderEntry> {
     );
   }
 
-  
-
   Future<void> sendPostRequest() async {
+    Map<String, String> databody = {
+      'orddate': orderdate!,
+      'action': 'CREATE',
+      'memo': '',
+      'fid': firmId!,
+      'amount': getSumOfAmounts().toString(),
+      'custcode': custcode!,
+      'itemdata': jsonEncode(apimap),
+    };
+    if (smcode != null) {
+      databody['smcode'] = smcode!;
+    }
+
     final response = await http.post(
       Uri.parse(orderurl),
-      body: {
-        'orddate': orderdate,
-        'action': 'CREATE',
-        'memo': '',
-        'fid': firmId,
-        'amount': getSumOfAmounts().toString(),
-        'custcode': custcode,
-        'itemdata': jsonEncode(apimap),
-      },
+      body:databody,
     );
     final result = jsonDecode(response.body);
 
@@ -540,8 +555,8 @@ class _OrderEntryState extends State<OrderEntry> {
     }
 
     // Send "Hello World" to the printer
-     
-   String receipt = String.fromCharCode(27) +
+
+    String receipt = String.fromCharCode(27) +
         String.fromCharCode(33) +
         String.fromCharCode(24);
     receipt += "                Hindustan Foods\n";
@@ -582,7 +597,8 @@ class _OrderEntryState extends State<OrderEntry> {
           if (endIndex > itemName.length) {
             endIndex = itemName.length;
           }
-          line = '${itemName.substring(i, endIndex).padRight(itemPadding)}${' ' * (3 + 6 + 3)}${' ' * (amountString.length - 1)}\n';
+          line =
+              '${itemName.substring(i, endIndex).padRight(itemPadding)}${' ' * (3 + 6 + 3)}${' ' * (amountString.length - 1)}\n';
           receipt += line;
         }
       }
