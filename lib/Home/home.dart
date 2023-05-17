@@ -19,12 +19,18 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-String? username;
+String? smcode;
 String? fullname;
 
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    getsmcode().then((value) {
+      setState(() {
+        smcode = value;
+      });
+    });
+
     getfname().then((value) {
       setState(() {
         fullname = value!;
@@ -38,6 +44,18 @@ class _HomePageState extends State<HomePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     late String? fullname = prefs.getString('fullname');
     return fullname;
+  }
+
+  Future<String?> getsmcode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? smcode = prefs.getString('sm_code');
+    return smcode;
+  }
+
+  Future<String?> getsmname() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    late String? smname = prefs.getString('sm_name');
+    return smname;
   }
 
   @override

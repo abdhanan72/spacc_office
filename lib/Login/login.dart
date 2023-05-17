@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spacc_office/Home/home.dart';
 
 class Login extends StatefulWidget {
-   const Login({super.key});
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -23,7 +23,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool _obscuretext = true;
 
-    @override
+  @override
   void initState() {
     super.initState();
     checkLogin();
@@ -64,13 +64,13 @@ class _LoginState extends State<Login> {
     }
   }
 
-    void _toggle() {
+  void _toggle() {
     setState(() {
       _obscuretext = !_obscuretext;
     });
   }
 
-void _saveForm(http.Response response) async {
+  void _saveForm(http.Response response) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       prefs = await SharedPreferences.getInstance();
@@ -84,18 +84,27 @@ void _saveForm(http.Response response) async {
         await prefs.setString('fullname', fullname);
         var username = jsonData["data"]["user_name"];
         await prefs.setString('user_name', username);
+        var smcode = jsonData["data"]["sm_code"];
+        if (smcode != null) {
+          await prefs.setString('sm_code', smcode);
+        }
+        var smaname = jsonData["data"]["sm_name"];
+        if (smaname != null) {
+          await prefs.setString('sm_name', smaname);
+        }
       }
       await prefs.setBool('isLoggedIn', true);
     }
   }
 
-    void _showdialog() {
+  void _showdialog() {
     showDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
           title: Lottie.asset('assets/45721-no-internet.json',
-              width: MediaQuery.of(context).size.width*0.1, height: MediaQuery.of(context).size.height*0.1),
+              width: MediaQuery.of(context).size.width * 0.1,
+              height: MediaQuery.of(context).size.height * 0.1),
           content:
               const Text('Please check your internet connection and try again'),
           actions: [
@@ -125,26 +134,27 @@ void _saveForm(http.Response response) async {
 
   @override
   Widget build(BuildContext context) {
-    var mediaquery = MediaQuery.of(context);  
+    var mediaquery = MediaQuery.of(context);
     return Scaffold(
-
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              Padding( 
-                padding:  EdgeInsets.only(top:mediaquery.size.height*0.1),
+              Padding(
+                padding: EdgeInsets.only(top: mediaquery.size.height * 0.1),
                 child: Center(
                   child: SizedBox(
-                    width: mediaquery.size.width*0.8,
-                    child: Image.asset('assets/spacc_logo-1__2__page-0001-removebg-preview.png')),
+                      width: mediaquery.size.width * 0.8,
+                      child: Image.asset(
+                          'assets/spacc_logo-1__2__page-0001-removebg-preview.png')),
                 ),
               ),
-               Padding(
-                padding:  EdgeInsets.symmetric(horizontal:mediaquery.size.width*0.1),
-                child:  TextFormField(
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: mediaquery.size.width * 0.1),
+                child: TextFormField(
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please Enter a username';
@@ -153,97 +163,101 @@ void _saveForm(http.Response response) async {
                   },
                   onSaved: (value) => unm = value!,
                   decoration: InputDecoration(
-                    label: const Text('Username'),
-                    border: OutlineInputBorder(
-                       borderSide: BorderSide(
-                                      color: const Color(0xff000080),
-                                      width: mediaquery.size.width*0.01,
-                                    ),
-                      borderRadius: BorderRadius.circular(20)
-                    )
-                  ),
+                      label: const Text('Username'),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: const Color(0xff000080),
+                            width: mediaquery.size.width * 0.01,
+                          ),
+                          borderRadius: BorderRadius.circular(20))),
                 ),
               ),
-              SizedBox(height: mediaquery.size.height*0.06,),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: mediaquery.size.width * 0.1),
-                child:TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter a password';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) => pwd = value!,
-                                obscureText: _obscuretext,
-                                decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscuretext
-                                            ? Icons.remove_red_eye_outlined
-                                            : Icons.visibility_off,
-                                        color: const Color(0xff000080),
-                                      ),
-                                      onPressed: _toggle,
-                                    ),
-                                    labelText: 'Password',
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                     color: const Color(0xff000080),
-                          width: mediaquery.size.width * 0.01,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20)
-                                    ))),
-                          ),
-              
-              
               SizedBox(
                 height: mediaquery.size.height * 0.06,
               ),
-              
-              SizedBox(width:mediaquery.size.width*0.3,
-                child: ElevatedButton(onPressed: () async {
-                                hasinternet = await InternetConnectionChecker()
-                                    .hasConnection;
-        
-                                if (hasinternet == false) {
-                                  _showdialog();
-                                }
-        
-                                final response = await login();
-        
-                                if (response.statusCode == 200) {
-                                  final responseBody = jsonDecode(response.body);
-                                  if (responseBody['response_code'] == 27) {
-                                    var fullname =
-                                        responseBody["data"]["fullname"];
-                                    await prefs.setString('fullname', fullname);
-                                    var username=responseBody["data"]["user_name"];
-                                    await prefs.setString('user_name', username);
-                                    _saveForm(response);
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const HomePage(),
-                                        ));
-                                  } else {
-                                    // ignore: use_build_context_synchronously
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          Text(responseBody['response_desc']),
-                                    ));
-                                  }
-                                } else {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text('Login Failed'),
-                                  ));
-                                }
-                              }, child:const Text('Login')),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: mediaquery.size.width * 0.1),
+                child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => pwd = value!,
+                    obscureText: _obscuretext,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscuretext
+                                ? Icons.remove_red_eye_outlined
+                                : Icons.visibility_off,
+                            color: const Color(0xff000080),
+                          ),
+                          onPressed: _toggle,
+                        ),
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: const Color(0xff000080),
+                              width: mediaquery.size.width * 0.01,
+                            ),
+                            borderRadius: BorderRadius.circular(20)))),
+              ),
+              SizedBox(
+                height: mediaquery.size.height * 0.06,
+              ),
+              SizedBox(
+                width: mediaquery.size.width * 0.3,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      hasinternet =
+                          await InternetConnectionChecker().hasConnection;
+
+                      if (hasinternet == false) {
+                        _showdialog();
+                      }
+
+                      final response = await login();
+
+                      if (response.statusCode == 200) {
+                        final responseBody = jsonDecode(response.body);
+                        if (responseBody['response_code'] == 27) {
+                          var fullname = responseBody["data"]["fullname"];
+                          await prefs.setString('fullname', fullname);
+                          var username = responseBody["data"]["user_name"];
+                          await prefs.setString('user_name', username);
+                          var smcode = responseBody["data"]["sm_code"];
+                          if (smcode != null) {
+                            await prefs.setString('sm_code', smcode);
+                          }
+                          var smaname = responseBody["data"]["sm_name"];
+                          if (smaname != null) {
+                            await prefs.setString('sm_name', smaname);
+                          }
+                          _saveForm(response);
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomePage(),
+                              ));
+                        } else {
+                          // ignore: use_build_context_synchronously
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(responseBody['response_desc']),
+                          ));
+                        }
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Login Failed'),
+                        ));
+                      }
+                    },
+                    child: const Text('Login')),
               ),
             ],
           ),
@@ -252,4 +266,3 @@ void _saveForm(http.Response response) async {
     );
   }
 }
-
